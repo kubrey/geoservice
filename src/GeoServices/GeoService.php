@@ -4,7 +4,7 @@ namespace GeoServices;
 
 use GeoServices\Services\Freegeoip;
 use GeoServices\Services\Geobytes;
-use GeoServices\Services\Ipgeobase;
+use GeoServices\Services\Ipgeobaseru;
 use GeoServices\Services\Ipinfo;
 use GeoServices\Services\Maxmind;
 use GeoServices\Services\Telize;
