@@ -68,7 +68,7 @@ use GeoServices\GeoService;
 $g = new GeoService();
 try {
     //установка полного пути к базе maxmind (если она используется)
-    $g->setMaxminDb(dirname(__FILE__) . '/GeoLite2-City.mmdb');
+    $g->setMaxmindDb(dirname(__FILE__) . '/GeoLite2-City.mmdb');
     $sec = $g->lookup('95.153.74.242');
     var_dump($sec->city);
 } catch (Exception $ex) {
