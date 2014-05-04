@@ -51,7 +51,7 @@ class GeoService {
      * @throws Exception
      * @return \GeoServices\GeoService
      */
-    public function setMaxminDb($file) {
+    public function setMaxmindDb($file) {
         if (!is_file($file)) {
             throw new GeoException('Wrong maxmind db path');
         }
