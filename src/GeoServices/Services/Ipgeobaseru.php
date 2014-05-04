@@ -47,6 +47,7 @@ class Ipgeobaseru {
         $geo->latitude = (isset($obj->lat)) ? ($obj->lat) : null;
         $geo->longitude = (isset($obj->lng)) ? ($obj->lng) : null;
         $geo->city = (isset($obj->city)) ? ($obj->city) : null;
+        $geo->method = $this->method;
         
         return $geo;
     }

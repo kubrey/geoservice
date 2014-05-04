@@ -12,6 +12,7 @@ namespace GeoServices;
  * @property-write string $regionName
  * @property-write string $countryCode
  * @property-write string $isp
+ * @property-write string $method
  *
  * @author kubrey
  */
@@ -26,6 +27,7 @@ class GeoObject {
     public $regionName;
     public $coutntryCode; //2letter
     public $isp;
+    public $method;
     
     
     public function __construct() {

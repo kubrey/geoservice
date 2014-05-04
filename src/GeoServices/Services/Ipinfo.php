@@ -65,6 +65,7 @@ class Ipinfo {
         $geo->city = (isset($obj->city)) ? ($obj->city) : null;
         $geo->zip = (isset($obj->zipcode)) ? ($obj->zipcode) : null;
         $geo->isp = (isset($obj->org)) ? ($obj->org) : null;
+        $geo->method = $this->method;
         
         return $geo;
     }

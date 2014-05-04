@@ -46,6 +46,7 @@ class Geobytes {
         $geo->latitude = (isset($obj->latitude)) ? ($obj->latitude) : null;
         $geo->longitude = (isset($obj->longitude)) ? ($obj->longitude) : null;
         $geo->city = (isset($obj->city)) ? ($obj->city) : null;
+        $geo->method = $this->method;
         
         return $geo;
     }

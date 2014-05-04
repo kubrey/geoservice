@@ -58,7 +58,7 @@ class Maxmind {
         $geo->latitude = (isset($obj->location->latitude)) ? ($obj->location->latitude) : null;
         $geo->longitude = (isset($obj->location->longitude)) ? ($obj->location->longitude) : null;
         $geo->city = (isset($obj->city->name)) ? ($obj->city->name) : null;
-//        echo $geo->countryCode;
+        $geo->method = $this->method;
         return $geo;
     }
 

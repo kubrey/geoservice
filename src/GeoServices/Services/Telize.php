@@ -59,6 +59,7 @@ class Telize {
         $geo->longitude = (isset($obj->longitude)) ? ($obj->longitude) : null;
         $geo->city = (isset($obj->city)) ? ($obj->city) : null;
         $geo->isp = (isset($obj->isp)) ? ($obj->isp) : null;
+        $geo->method = $this->method;
         
         return $geo;
     }

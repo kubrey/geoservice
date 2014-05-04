@@ -61,6 +61,7 @@ class Freegeoip {
         $geo->longitude = (isset($obj->longitude)) ? ($obj->longitude) : null;
         $geo->city = (isset($obj->city)) ? ($obj->city) : null;
         $geo->zip = (isset($obj->zipcode)) ? ($obj->zipcode) : null;
+        $geo->method = $this->method;
         
         return $geo;
     }
