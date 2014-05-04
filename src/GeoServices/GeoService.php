@@ -2,8 +2,13 @@
 
 namespace GeoServices;
 
-use GeoIp2\Database\Reader;
-use Ipgeobase\IpGeobase;
+use GeoServices\Services\Freegeoip;
+use GeoServices\Services\Geobytes;
+use GeoServices\Services\Ipgeobase;
+use GeoServices\Services\Ipinfo;
+use GeoServices\Services\Maxmind;
+use GeoServices\Services\Telize;
+use GeoServices\GeoException;
 
 /**
  * @property  boolean|int $maxmind False - если неиспользовать, int - прио
@@ -13,7 +18,7 @@ use Ipgeobase\IpGeobase;
  * @property  boolean|int $geobytes
  * @property  boolean|int $telize
  * @property  boolean $searching4City Поиск  города(true) или  достаточно страны(false)
- * @author kubrey
+ * @author kubrey <kubrey@gmail.com>
  */
 class GeoService {
 
@@ -26,13 +31,15 @@ class GeoService {
     private $maxmindDb;
     public $searching4City = true;
     private $configs = array(
-        'maxmind' => array('type' => 'standalone'),
-        'ipgeobase' => array('type' => 'standalone', 'cc' => array('ua', 'ru')),
-        'freegeoip' => array('type' => 'service'),
-        'ipinfo' => array('type' => 'service'),
-        'telize' => array('type' => 'service'),
-        'geobytes' => array('type' => 'service')
+        'Maxmind' => array('type' => 'standalone'),
+        'Ipgeobaseru' => array('type' => 'standalone', 'cc' => array('ua', 'ru')),
+        'Freegeoip' => array('type' => 'service'),
+        'Ipinfo' => array('type' => 'service'),
+        'Telize' => array('type' => 'service'),
+        'Geobytes' => array('type' => 'service')
     );
+    private $lastResponce = null;
+    private $errors = array();
 
     public function __construct() {
         
@@ -46,7 +53,7 @@ class GeoService {
      */
     public function setMaxminDb($file) {
         if (!is_file($file)) {
-            throw new Exception('Wrong maxmind db path');
+            throw new GeoException('Wrong maxmind db path');
         }
         $this->maxmindDb = $file;
         return $this;
@@ -55,19 +62,66 @@ class GeoService {
     /**
      * 
      * @param string $ip
+     * @return \GeoServices\GeoObject
+     * @throws GeoException
      */
     public function lookup($ip) {
-        $methods = array(); 
+        $methods = array();
         foreach ($this->configs as $method => $prop) {
-            if(isset($this->{$method}) && $this->{$method}){
-                $methods[$method] = $this->{$method};
+            if (isset($this->{strtolower($method)}) && $this->{strtolower($method)}) {
+                $methods[$method] = $this->{strtolower($method)};
             }
         }
-        
+        $options = array();
+        $options['maxminddb'] = $this->maxmindDb;
         asort($methods);
-        foreach ($methods as $m) {
+        foreach ($methods as $m=>$mode) {
+            if(!$mode){
+                continue;
+            }
             
+            try {
+                if (array_key_exists('cc', $this->configs[$m])) {
+                    //метод работающий под конкретные страны
+                    if (!empty($this->lastResponce) && !empty($this->lastResponce->countryCode) && $this->searching4City && !in_array($this->lastResponce->countryCode, $this->configs[$m]['cc'])) {
+                        continue;
+                    }
+                }
+                //$geo = new $m(); не срабатывает
+                switch($m){
+                    case 'Maxmind':
+                        $geo = new Maxmind();
+                        break;
+                    case 'Ipgeobaseru':
+                        $geo = new Ipgeobaseru();
+                        break;
+                     case 'Telize':
+                        $geo = new Telize();
+                        break;
+                     case 'Freegeoip':
+                        $geo = new Freegeoip();
+                        break;
+                     case 'Geobytes':
+                        $geo = new Geobytes();
+                        break;
+                     case 'Ipinfo':
+                        $geo = new Ipinfo();
+                        break;
+                }
+                $res = $geo->lookup($ip, $options);
+                var_dump($res);
+                $this->lastResponce = $res;
+                if (!empty($res->city)) {
+                    return $res;
+                } elseif (!$this->searching4City && !empty($res->countryCode)) {
+                    return $res;
+                }
+            } catch (\GeoServices\GeoException $ex) {
+                $this->errors[$m] = $ex->getMessage();
+                continue;
+            }
         }
+        throw new GeoException('no data, '.print_r($this->errors, true));
     }
 
 }

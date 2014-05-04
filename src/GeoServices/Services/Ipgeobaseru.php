@@ -9,8 +9,8 @@ use GeoServices\GeoObject;
  *
  * @author kubrey
  */
-class Ipgeobase {
-    private $method = 'ipgeobase';
+class Ipgeobaseru {
+    private $method = 'ipgeobaseru';
     private $ip;
     
      /**
