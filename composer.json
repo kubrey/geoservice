@@ -27,6 +27,7 @@
             "GeoServices": "src"
         }
     },
+    "minimum-stability" : "dev",
     "authors": [
         {
             "name": "Sergey Kubrey",
