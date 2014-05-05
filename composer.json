@@ -5,7 +5,7 @@
     "version": "0.1.0",
     "require": {
         "php": ">=5.3.0",
-        "kubrey/ipgeobase": "master",
+        "kubrey/ipgeobase": "dev-master",
         "geoip2/geoip2": "0.6.*"
     },
     "repositories": [
@@ -13,11 +13,11 @@
             "type": "package",
             "package": {
                 "name": "Ipgeobase",
-                "version": "master", 
+                "version": "dev-master", 
                 "source": {
                     "url": "https://bitbucket.org/kubrey/ipgeobase",
                     "type": "git",
-                    "reference": "master"
+                    "reference": "dev-master"
                 }
             }
         }
