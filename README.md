@@ -6,7 +6,7 @@
 Включает в себя методы:
 
  - Maxmind
- - Ipgeobase
+ - Ipgeobase.ru
  - Ipinfo.io
  - Freegeoip.net
  - Geobytes.com
@@ -25,10 +25,15 @@
     "require": {
         "kubrey/geoservice": "dev-master"
     },
+    "minimum-stability": "dev",
     "repositories":[
         {
             "type":"git",
             "url":"https://bitbucket.org/kubrey/geoservice"
+        },
+        {
+            "type":"git",
+            "url":"https://bitbucket.org/kubrey/ipgeobase"
         }
     ]
 }
