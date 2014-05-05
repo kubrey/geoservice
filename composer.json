@@ -8,6 +8,12 @@
         "kubrey/ipgeobase":"dev-master",
         "geoip2/geoip2": "0.6.*"
     },
+    "repositories":[
+        {
+            "type":"git",
+            "url":"https://bitbucket.org/kubrey/ipgeobase"
+        }
+    ],
     "autoload":{
         "psr-0":{
             "GeoServices":"src"
@@ -18,11 +24,6 @@
             "name": "Sergey Kubrey",
             "email": "kubrey@gmail.com"
         }
-    ],
-    "repositories":[
-        {
-            "type":"git",
-            "url":"https://bitbucket.org/kubrey/ipgeobase"
-        }
     ]
+    
 }
