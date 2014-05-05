@@ -12,7 +12,7 @@
         {
             "type": "package",
             "package": {
-                "name": "Ipgeobase",
+                "name": "kubrey/ipgeobase",
                 "version": "dev-master", 
                 "source": {
                     "url": "https://bitbucket.org/kubrey/ipgeobase",
