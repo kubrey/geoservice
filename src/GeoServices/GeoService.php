@@ -11,7 +11,7 @@ use GeoServices\Services\Telize;
 use GeoServices\GeoException;
 
 /**
- * @property  boolean|int $maxmind False - если неиспользовать, int - прио
+ * @property  boolean|int $maxmind False - если не использовать, int - прио
  * @property  boolean|int $ipgeobase
  * @property  boolean|int $freegeoip
  * @property  boolean|int $ipinfo 
@@ -46,9 +46,9 @@ class GeoService {
     }
 
     /**
-     * 
+     * Указать путь к базе maxmind
      * @param string $file Полный путь к базе *.mmdb
-     * @throws Exception
+     * @throws GeoException
      * @return \GeoServices\GeoService
      */
     public function setMaxmindDb($file) {
@@ -60,7 +60,7 @@ class GeoService {
     }
 
     /**
-     * 
+     * Получить geo-данные
      * @param string $ip
      * @return \GeoServices\GeoObject
      * @throws GeoException
@@ -87,7 +87,7 @@ class GeoService {
                         continue;
                     }
                 }
-                //$geo = new $m(); не срабатывает
+                //$geo = new $m(); не срабатывает, печаль
                 switch($m){
                     case 'Maxmind':
                         $geo = new Maxmind();
@@ -109,7 +109,6 @@ class GeoService {
                         break;
                 }
                 $res = $geo->lookup($ip, $options);
-                var_dump($res);
                 $this->lastResponce = $res;
                 if (!empty($res->city)) {
                     return $res;
