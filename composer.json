@@ -8,26 +8,11 @@
         "kubrey/ipgeobase": "dev-master",
         "geoip2/geoip2": "0.6.*"
     },
-    "repositories": [
-        {
-            "type": "package",
-            "package": {
-                "name": "kubrey/ipgeobase",
-                "version": "dev-master", 
-                "source": {
-                    "url": "https://bitbucket.org/kubrey/ipgeobase",
-                    "type": "git",
-                    "reference": "dev-master"
-                }
-            }
-        }
-    ],
     "autoload": {
         "psr-0": {
             "GeoServices": "src"
         }
     },
-    "minimum-stability" : "dev",
     "authors": [
         {
             "name": "Sergey Kubrey",
