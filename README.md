@@ -69,6 +69,7 @@ require 'vendor/autoload.php';
 require 'vendor/autoload.php';
 
 use GeoServices\GeoService;
+use GeoServices\GeoException;
 
 $g = new GeoService();
 try {
@@ -76,7 +77,7 @@ try {
     $g->setMaxmindDb(dirname(__FILE__) . '/GeoLite2-City.mmdb');
     $sec = $g->lookup('95.153.74.242');
     var_dump($sec->city);
-} catch (Exception $ex) {
+} catch (GeoException $ex) {
     echo $ex->getMessage();
 }
 ```
