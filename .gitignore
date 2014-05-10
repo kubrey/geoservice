@@ -6,3 +6,4 @@ index.php
 *.mmdb
 *.lock
 *.phar
+*.dat
