@@ -6,7 +6,8 @@
     "require": {
         "php": ">=5.3.0",
         "kubrey/ipgeobase": "dev-master",
-        "geoip2/geoip2": "0.6.*"
+        "geoip2/geoip2": "0.6.*",
+        "geoip/geoip":"~1.14"
     },
     "autoload": {
         "psr-0": {
