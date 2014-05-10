@@ -55,7 +55,7 @@ class MaxmindOld {
 
     /**
      * 
-     * @param \GeoIp2\Model\City $obj
+     * @param \stdClass $obj
      * @return \GeoServices\Services\GeoObject
      */
     private function formalize($obj) {
