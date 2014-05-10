@@ -1,5 +1,7 @@
 <?php
+
 namespace GeoServices\Services;
+
 use GeoServices\GeoException;
 use GeoServices\GeoObject;
 
@@ -9,18 +11,19 @@ use GeoServices\GeoObject;
  * @author kubrey
  */
 class Ipinfo {
+
     private $method = 'ipinfo';
     private $url = 'http://ipinfo.io/';
     private $ip;
-    
-     /**
+
+    /**
      * 
      * @param string $ip
      * @param array $options
      * @return \GeoServices\GeoObject
      * @throws GeoException
      */
-     public function lookup($ip,$options = array()) {
+    public function lookup($ip, $options = array()) {
         $this->ip = $ip;
         $url = $this->url . $ip;
 
@@ -41,14 +44,17 @@ class Ipinfo {
             throw new GeoException('Curl error:' . $errors);
         }
         $data = json_decode($json);
-        if (isset($data->loc)) {
+        if (isset($data->loc) || !empty($data->loc)) {
             $coords = explode(',' . $data->loc);
-            $data->latitude = trim($coords[0]);
-            $data->longitude = trim($coords[1]);
+            if (is_array($coords) && count($coords) == 1) {
+                $data->latitude = trim($coords[0]);
+                $data->longitude = trim($coords[1]);
+            }
         }
-        
+
         return $this->formalize($data);
     }
+
     /**
      * 
      * @param \stdClass $obj
@@ -66,7 +72,8 @@ class Ipinfo {
         $geo->zip = (isset($obj->zipcode)) ? ($obj->zipcode) : null;
         $geo->isp = (isset($obj->org)) ? ($obj->org) : null;
         $geo->method = $this->method;
-        
+
         return $geo;
     }
+
 }

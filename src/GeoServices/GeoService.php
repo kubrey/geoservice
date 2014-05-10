@@ -8,6 +8,7 @@ use GeoServices\Services\Ipgeobaseru;
 use GeoServices\Services\Ipinfo;
 use GeoServices\Services\Maxmind;
 use GeoServices\Services\Telize;
+use GeoServices\Services\MaxmindOld;
 use GeoServices\GeoException;
 
 /**
@@ -28,7 +29,9 @@ class GeoService {
     public $ipinfo = 5;
     public $geobytes = 6;
     public $telize = 4;
+    public $maxmindold = 1;
     private $maxmindDb;
+    private $maxmindOldDb;
     public $searching4City = true;
     private $configs = array(
         'Maxmind' => array('type' => 'standalone'),
@@ -36,7 +39,8 @@ class GeoService {
         'Freegeoip' => array('type' => 'service'),
         'Ipinfo' => array('type' => 'service'),
         'Telize' => array('type' => 'service'),
-        'Geobytes' => array('type' => 'service')
+        'Geobytes' => array('type' => 'service'),
+        'Maxmindold' => array('type'=>'standalone')
     );
     private $lastResponce = null;
     private $errors = array();
@@ -46,7 +50,7 @@ class GeoService {
     }
 
     /**
-     * Указать путь к базе maxmind
+     * Указать путь к базе maxmind *.mmdb
      * @param string $file Полный путь к базе *.mmdb
      * @throws GeoException
      * @return \GeoServices\GeoService
@@ -56,6 +60,20 @@ class GeoService {
             throw new GeoException('Wrong maxmind db path');
         }
         $this->maxmindDb = $file;
+        return $this;
+    }
+    
+    /**
+     * Указать путь к базе maxmind *.dat
+     * @param string $file Полный путь к базе *.dat
+     * @throws GeoException
+     * @return \GeoServices\GeoService
+     */
+    public function setMaxmindOldDb($file) {
+        if (!is_file($file)) {
+            throw new GeoException('Wrong maxmindold db path');
+        }
+        $this->maxmindOldDb = $file;
         return $this;
     }
 
@@ -72,6 +90,7 @@ class GeoService {
                 $methods[$method] = $this->{strtolower($method)};
             }
         }
+        
         $options = array();
         $options['maxminddb'] = $this->maxmindDb;
         asort($methods);
@@ -106,6 +125,9 @@ class GeoService {
                         break;
                      case 'Ipinfo':
                         $geo = new Ipinfo();
+                        break;
+                    case 'Maxmindold':
+                        $geo = new MaxmindOld();
                         break;
                 }
                 $res = $geo->lookup($ip, $options);
