@@ -12,13 +12,24 @@ use GeoServices\Services\MaxmindOld;
 use GeoServices\GeoException;
 
 /**
+ * Класс поиска гео-данных по IP-адресу
+ * @see https://bitbucket.org/kubrey/geoservice
  * @property  boolean|int $maxmind False - если не использовать, int - прио
- * @property  boolean|int $ipgeobase
- * @property  boolean|int $freegeoip
- * @property  boolean|int $ipinfo 
- * @property  boolean|int $geobytes
- * @property  boolean|int $telize
- * @property  boolean $searching4City Поиск  города(true) или  достаточно страны(false)
+ * @property  boolean|int $ipgeobase False - если не использовать, int - прио
+ * @property  boolean|int $freegeoip False - если не использовать, int - прио
+ * @property  boolean|int $ipinfo False - если не использовать, int - прио
+ * @property  boolean|int $geobytes False - если не использовать, int - прио
+ * @property  boolean|int $telize False - если не использовать, int - прио
+ * @property  boolean|int $telize False - если не использовать, int - прио
+ * 
+ * @property boolean $isCityRequired обязательно ли найти город
+ * @property boolean $isCountryCodeRequired обязательно ли найти код страны
+ * @property boolean $isCountryNameRequired обязательно ли найти название старны
+ * @property boolean $isRegionNameRequired обязательно ли найти регион
+ * @property boolean $isLatitudeRequired обязательно ли найти долготу
+ * @property boolean $isLongitudeRequired обязательно ли найти широту
+ * @property boolean $isZipRequired обязательно ли найти zip
+ * @property boolean $isIspRequired обязательно ли найти провайдера
  * @author kubrey <kubrey@gmail.com>
  */
 class GeoService {
@@ -32,7 +43,14 @@ class GeoService {
     public $maxmindold = 1;
     private $maxmindDb;
     private $maxmindOldDb;
-    public $searching4City = true;
+    public $isCityRequired = true;
+    public $isCountryCodeRequired = true;
+    public $isCountryNameRequired = true;
+    public $isLatitudeRequired = false;
+    public $isLongitudeRequired = false;
+    public $isRegionNameRequired = false;
+    public $isIspRequired = false;
+    public $isZipRequired = false;
     private $configs = array(
         'Maxmind' => array('type' => 'standalone'),
         'Ipgeobaseru' => array('type' => 'standalone', 'cc' => array('ua', 'ru')),
@@ -40,7 +58,7 @@ class GeoService {
         'Ipinfo' => array('type' => 'service'),
         'Telize' => array('type' => 'service'),
         'Geobytes' => array('type' => 'service'),
-        'Maxmindold' => array('type'=>'standalone')
+        'Maxmindold' => array('type' => 'standalone')
     );
     private $lastResponce = null;
     private $errors = array();
@@ -62,7 +80,7 @@ class GeoService {
         $this->maxmindDb = $file;
         return $this;
     }
-    
+
     /**
      * Указать путь к базе maxmind *.dat
      * @param string $file Полный путь к базе *.dat
@@ -90,41 +108,53 @@ class GeoService {
                 $methods[$method] = $this->{strtolower($method)};
             }
         }
-        
+
+        $properties = GeoObject::getProperties();
+        $nonempty = false;
+        foreach ($properties as $pr) {
+            if ($this->{'is' . ucfirst($pr) . 'Required'} === true) {
+                $nonempty = true;
+                break;
+            }
+        }
+        if (!$nonempty) {
+            throw new GeoException('All geo object properties are disabled, nothing to look up');
+        }
+
         $options = array();
         $options['maxminddb'] = $this->maxmindDb;
         $options['maxmindolddb'] = $this->maxmindOldDb;
         asort($methods);
-        foreach ($methods as $m=>$mode) {
-            if(!$mode){
+        foreach ($methods as $m => $mode) {
+            if (!$mode) {
                 continue;
             }
-            
+
             try {
                 if (array_key_exists('cc', $this->configs[$m])) {
                     //метод работающий под конкретные страны
-                    if (!empty($this->lastResponce) && !empty($this->lastResponce->countryCode) && $this->searching4City && !in_array($this->lastResponce->countryCode, $this->configs[$m]['cc'])) {
+                    if (!empty($this->lastResponce) && !empty($this->lastResponce->countryCode) && !in_array($this->lastResponce->countryCode, $this->configs[$m]['cc'])) {
                         continue;
                     }
                 }
                 //$geo = new $m(); не срабатывает, печаль
-                switch($m){
+                switch ($m) {
                     case 'Maxmind':
                         $geo = new Maxmind();
                         break;
                     case 'Ipgeobaseru':
                         $geo = new Ipgeobaseru();
                         break;
-                     case 'Telize':
+                    case 'Telize':
                         $geo = new Telize();
                         break;
-                     case 'Freegeoip':
+                    case 'Freegeoip':
                         $geo = new Freegeoip();
                         break;
-                     case 'Geobytes':
+                    case 'Geobytes':
                         $geo = new Geobytes();
                         break;
-                     case 'Ipinfo':
+                    case 'Ipinfo':
                         $geo = new Ipinfo();
                         break;
                     case 'Maxmindold':
@@ -133,24 +163,31 @@ class GeoService {
                 }
                 $res = $geo->lookup($ip, $options);
                 $this->lastResponce = $res;
-                if (!empty($res->city)) {
-                    return $res;
-                } elseif (!$this->searching4City && !empty($res->countryCode)) {
-                    return $res;
+                $complete = true;
+                foreach ($properties as $pr) {
+                    if ($this->{'is' . ucfirst($pr) . 'Required'} === true && empty($this->lastResponce->{$pr})) {
+                        $complete = false;
+                        break;
+                    }
                 }
+                if(!$complete){
+                    $this->errors[$m] = 'Not all required properties found';
+                    continue;
+                }
+                return $res;
             } catch (\GeoServices\GeoException $ex) {
                 $this->errors[$m] = $ex->getMessage();
                 continue;
             }
         }
-        throw new GeoException('no data, '.print_r($this->errors, true));
+        throw new GeoException('no data, ' . print_r($this->errors, true));
     }
-    
+
     /**
      * 
      * @return array
      */
-    public function getCallStack(){
+    public function getCallStack() {
         return $this->errors;
     }
 
