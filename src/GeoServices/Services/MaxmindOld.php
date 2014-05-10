@@ -39,7 +39,7 @@ class MaxmindOld {
         }
 
         if (is_object($object)) {
-            $obj = new stdClass();
+            $obj = new \stdClass();
             foreach ($object as $key => $val) {
                 $obj->{$key} = $val;
             }
@@ -61,8 +61,8 @@ class MaxmindOld {
     private function formalize($obj) {
         $geo = new GeoObject();
         $geo->ip = $this->ip;
-        $geo->countryCode = (isset($obj->country_code)) ? strtolower($obj->country_name) : null;
-        $geo->countryName = (isset($obj->country_name)) ? strtolower($obj->country_name) : null;
+        $geo->countryCode = (isset($obj->country_code)) ? strtolower($obj->country_code) : null;
+        $geo->countryName = (isset($obj->country_name)) ? ($obj->country_name) : null;
         $geo->latitude = (isset($obj->latitude)) ? ($obj->latitude) : null;
         $geo->longitude = (isset($obj->longitude)) ? ($obj->longitude) : null;
         $geo->city = (isset($obj->city)) ? ($obj->city) : null;

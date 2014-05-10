@@ -93,6 +93,7 @@ class GeoService {
         
         $options = array();
         $options['maxminddb'] = $this->maxmindDb;
+        $options['maxmindolddb'] = $this->maxmindOldDb;
         asort($methods);
         foreach ($methods as $m=>$mode) {
             if(!$mode){
@@ -143,6 +144,14 @@ class GeoService {
             }
         }
         throw new GeoException('no data, '.print_r($this->errors, true));
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    public function getCallStack(){
+        return $this->errors;
     }
 
 }
