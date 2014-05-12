@@ -123,5 +123,9 @@ class GeoService {
         }
         throw new GeoException('no data, '.print_r($this->errors, true));
     }
+    
+    public function getCallStack(){
+        return $this->errors;
+    }
 
 }
