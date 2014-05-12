@@ -6,11 +6,12 @@
 Включает в себя методы:
 
  - Maxmind
- - Ipgeobase
+ - Ipgeobase.ru
  - Ipinfo.io
  - Freegeoip.net
  - Geobytes.com
  - Telize.com
+ - Maxmind Legacy(v1)
 
 
 ### Установка через Composer ###
@@ -18,17 +19,22 @@
 #### Определение зависимостей ####
 
  [Composer](http://getcomposer.org/).
-Для установки добавьте `kubrey/ipgeobase` в Ваш `composer.json`. Если этого файла нет, то создайте его в корне сайта
+Для установки добавьте `kubrey/geoservice` в Ваш `composer.json`. Если этого файла нет, то создайте его в корне сайта
 
 ```json
 {
     "require": {
         "kubrey/geoservice": "dev-master"
     },
+    "minimum-stability": "dev",
     "repositories":[
         {
             "type":"git",
             "url":"https://bitbucket.org/kubrey/geoservice"
+        },
+        {
+            "type":"git",
+            "url":"https://bitbucket.org/kubrey/ipgeobase"
         }
     ]
 }
@@ -64,19 +70,21 @@ require 'vendor/autoload.php';
 require 'vendor/autoload.php';
 
 use GeoServices\GeoService;
+use GeoServices\GeoException;
 
 $g = new GeoService();
 try {
     //установка полного пути к базе maxmind (если она используется)
     $g->setMaxmindDb(dirname(__FILE__) . '/GeoLite2-City.mmdb');
+    //установка полного пути к базе maxmind legacy, если она используется
+    $g->setMaxmindOldDb(dirname(__FILE__).'/GeoLiteCity.dat');
     $sec = $g->lookup('95.153.74.242');
     var_dump($sec->city);
-} catch (Exception $ex) {
+} catch (GeoException $ex) {
     echo $ex->getMessage();
 }
 ```
 
-#### Применение ####
 Для установки произвольного порядка выполнения методов:
 
 ```
@@ -85,10 +93,10 @@ $g->ipgeobaseru = false;//не использовать
 $g->ipinfo = 3;
 ```
 
-Если достаточно найти страну:
+Для установки обязательных гео-параметров:
 
 ```
-$g->search4City = false;
+$g->isCityRequired = false; - поиск города не обязателен
 ```
 
 

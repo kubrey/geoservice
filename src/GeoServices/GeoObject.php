@@ -32,5 +32,13 @@ class GeoObject {
     
     public function __construct() {
         
-    }    
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    public static function getProperties(){
+        return array('countryName','city','latitude','longitude','zip','regionName','countryCode','isp');
+    }
 }

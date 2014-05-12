@@ -4,3 +4,6 @@ index.php
 .txt
 /vendor/*
 *.mmdb
+*.lock
+*.phar
+*.dat
