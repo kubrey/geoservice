@@ -184,15 +184,12 @@ class GeoService {
     }
 
     /**
-     * 
+     * Возвращает массив вызовов, предшествующих удачному
      * @return array
      */
     public function getCallStack() {
         return $this->errors;
     }
     
-    public function getCallStack(){
-        return $this->errors;
-    }
 
 }

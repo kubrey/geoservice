@@ -5,7 +5,7 @@ use GeoServices\GeoException;
 use GeoServices\GeoObject;
 
 /**
- * Description of Ipgeobase
+ * Реализует Ipgeobase с поиском по локальной базе, зависит от стороннего подключения
  *
  * @author kubrey
  */

@@ -4,7 +4,7 @@ namespace GeoServices\Services;
 use GeoServices\GeoException;
 use GeoServices\GeoObject;
 /**
- * Description of Telize
+ * Реализует Telize
  *
  * @author kubrey
  */

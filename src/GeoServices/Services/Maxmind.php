@@ -7,7 +7,7 @@ use GeoServices\GeoException;
 use GeoIp2\Database\Reader;
 
 /**
- * Description of Maxmind
+ * Реализует Maxmind, зависит от внешнего подключения
  *
  * @author kubrey
  */

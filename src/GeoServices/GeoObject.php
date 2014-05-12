@@ -35,7 +35,7 @@ class GeoObject {
     }
     
     /**
-     * 
+     * Возвращает массив свойств гео-объекта
      * @return array
      */
     public static function getProperties(){

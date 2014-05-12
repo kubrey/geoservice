@@ -6,7 +6,7 @@ use GeoServices\GeoObject;
 use GeoServices\GeoException;
 
 /**
- * Description of MaxmindOld
+ * Реализует Maxmind Legace(по .dat базе)
  *
  * @author kubrey <kubrey@gmail.com>
  */

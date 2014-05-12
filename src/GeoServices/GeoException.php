@@ -2,7 +2,7 @@
 namespace GeoServices;
 
 /**
- * Description of GeoException
+ * Кастомное исключение
  *
  * @author kubrey
  */

@@ -4,7 +4,8 @@ namespace GeoServices\Services;
 use GeoServices\GeoException;
 use GeoServices\GeoObject;
 /**
- * Description of Geobytes
+ * Реализует сервис Geobytes
+ * Cервис имеет ограничения  на количество вызовов в сутки
  *
  * @author kubrey
  */

@@ -4,7 +4,7 @@ use GeoServices\GeoException;
 use GeoServices\GeoObject;
 
 /**
- * Description of Freegeoip
+ * Реализует freegeoip сервис
  *
  * @author kubrey
  */

@@ -6,7 +6,7 @@ use GeoServices\GeoException;
 use GeoServices\GeoObject;
 
 /**
- * Description of Ipinfo
+ * Реализует Ipinfo
  *
  * @author kubrey
  */
