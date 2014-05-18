@@ -30,6 +30,7 @@ use GeoServices\GeoException;
  * @property boolean $isLongitudeRequired обязательно ли найти широту
  * @property boolean $isZipRequired обязательно ли найти zip
  * @property boolean $isIspRequired обязательно ли найти провайдера
+ * @property $accumulativeGeo Объект, накапливающий собранные гео-параметры
  * @author kubrey <kubrey@gmail.com>
  */
 class GeoService {
@@ -62,6 +63,7 @@ class GeoService {
     );
     private $lastResponce = null;
     private $errors = array();
+    private $accumulativeGeo;
 
     public function __construct() {
         
@@ -163,18 +165,20 @@ class GeoService {
                 }
                 $res = $geo->lookup($ip, $options);
                 $this->lastResponce = $res;
+                $this->accumulate();
                 $complete = true;
                 foreach ($properties as $pr) {
-                    if ($this->{'is' . ucfirst($pr) . 'Required'} === true && empty($this->lastResponce->{$pr})) {
+                    if ($this->{'is' . ucfirst($pr) . 'Required'} === true && empty($this->accumulativeGeo->{$pr})) {
                         $complete = false;
                         break;
                     }
                 }
-                if(!$complete){
+                if (!$complete) {
                     $this->errors[$m] = 'Not all required properties found';
                     continue;
                 }
-                return $res;
+//                return $res;
+                return $this->accumulativeGeo;
             } catch (\GeoServices\GeoException $ex) {
                 $this->errors[$m] = $ex->getMessage();
                 continue;
@@ -190,6 +194,18 @@ class GeoService {
     public function getCallStack() {
         return $this->errors;
     }
-    
+
+    /**
+     * Аккумуляция собранных данных
+     * @return GeoService
+     */
+    protected function accumulate() {
+        foreach ($this->lastResponce as $propName => $val) {
+            if(!isset($this->accumulativeGeo->{$propName}) || empty($this->accumulativeGeo->{$propName})){
+                $this->accumulativeGeo->{$propName} = $val;
+            }
+        }
+        return $this;
+    }
 
 }
