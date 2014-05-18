@@ -33,6 +33,7 @@ use GeoServices\GeoException;
  * @property $accumulativeGeo Объект, накапливающий собранные гео-параметры
  * @author kubrey <kubrey@gmail.com>
  * @todo Добавить поиск по ipv6
+ * @todo Добавить unit тесты
  */
 class GeoService {
 

@@ -25,7 +25,7 @@ class GeoObject {
     public $longitude;
     public $zip;
     public $regionName;
-    public $coutntryCode; //2letter
+    public $countryCode; //2letter
     public $isp;
     public $method;
     
