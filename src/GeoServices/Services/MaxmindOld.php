@@ -34,6 +34,8 @@ class MaxmindOld {
             $isp = GeoIP_record_by_addr($gisp, $ip);
             $object->isp = $isp->region;
             geoip_close($gisp);
+        } else {
+            $geo->isp = null;
         }
 
         //
@@ -58,10 +60,6 @@ class MaxmindOld {
         //
 
         return $this->formalize($obj);
-    }
-
-    private function ispLookup() {
-        
     }
 
     /**
