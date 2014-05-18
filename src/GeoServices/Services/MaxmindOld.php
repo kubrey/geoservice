@@ -35,7 +35,7 @@ class MaxmindOld {
             $object->isp = $isp->region;
             geoip_close($gisp);
         } else {
-            $geo->isp = null;
+            $object->isp = null;
         }
 
         //
