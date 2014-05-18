@@ -45,6 +45,7 @@ class GeoService {
     public $maxmindold = 1;
     private $maxmindDb;
     private $maxmindOldDb;
+    private $maxmindIspDb;
     public $isCityRequired = true;
     public $isCountryCodeRequired = true;
     public $isCountryNameRequired = true;
@@ -81,6 +82,20 @@ class GeoService {
             throw new GeoException('Wrong maxmind db path');
         }
         $this->maxmindDb = $file;
+        return $this;
+    }
+    
+    /**
+     * Указать полный путь к dat файлу с базой ISP от maxmind
+     * @param string $file
+     * @return \GeoServices\GeoService
+     * @throws GeoException
+     */
+    public function setMaxmindISPDb($file){
+        if (!is_file($file)) {
+            throw new GeoException('Wrong maxmind isp db path');
+        }
+        $this->maxmindIspDb = $file;
         return $this;
     }
 
@@ -127,6 +142,7 @@ class GeoService {
         $options = array();
         $options['maxminddb'] = $this->maxmindDb;
         $options['maxmindolddb'] = $this->maxmindOldDb;
+        $options['maxmindoldisp'] = $this->maxmindIspDb;
         asort($methods);
         foreach ($methods as $m => $mode) {
             if (!$mode) {
