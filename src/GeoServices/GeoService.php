@@ -32,7 +32,7 @@ use GeoServices\GeoException;
  * @property boolean $isIspRequired обязательно ли найти провайдера
  * @property $accumulativeGeo Объект, накапливающий собранные гео-параметры
  * @author kubrey <kubrey@gmail.com>
- * @todo Добавить базу ISP
+ * @todo Добавить поиск по ipv6
  */
 class GeoService {
 
