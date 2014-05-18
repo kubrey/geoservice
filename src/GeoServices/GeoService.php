@@ -32,6 +32,7 @@ use GeoServices\GeoException;
  * @property boolean $isIspRequired обязательно ли найти провайдера
  * @property $accumulativeGeo Объект, накапливающий собранные гео-параметры
  * @author kubrey <kubrey@gmail.com>
+ * @todo Добавить базу ISP
  */
 class GeoService {
 
@@ -203,6 +204,9 @@ class GeoService {
         foreach ($this->lastResponce as $propName => $val) {
             if(!isset($this->accumulativeGeo->{$propName}) || empty($this->accumulativeGeo->{$propName})){
                 $this->accumulativeGeo->{$propName} = $val;
+            }
+            if($propName == 'method'){
+                $this->accumulativeGeo->method = $val;
             }
         }
         return $this;
