@@ -6,7 +6,7 @@ use GeoServices\GeoObject;
 use GeoServices\GeoException;
 
 /**
- * Реализует Maxmind Legace(по .dat базе)
+ * Реализует Maxmind Legacy(по .dat базе)
  *
  * @author kubrey <kubrey@gmail.com>
  */
@@ -29,6 +29,15 @@ class MaxmindOld {
         }
         $gi = geoip_open($options[$this->method . 'db'], GEOIP_STANDARD);
         $object = GeoIP_record_by_addr($gi, $this->ip);
+        if (isset($options[$this->method . 'isp']) && is_file($options[$this->method . 'isp'])) {
+            $gisp = geoip_open($options[$this->method . 'isp'], GEOIP_ISP_EDITION);
+            $isp = GeoIP_record_by_addr($gisp, $ip);
+            $object->isp = $isp->region;
+            geoip_close($gisp);
+        } else {
+            $object->isp = null;
+        }
+
         //
         if (is_object($object)) {
             foreach ($object as $k => $oitem) {
@@ -44,7 +53,7 @@ class MaxmindOld {
                 $obj->{$key} = $val;
             }
         } else {
-            throw new GeoException("Failed to get geo-data by ".$this->method);
+            throw new GeoException("Failed to get geo-data by " . $this->method);
         }
 
         geoip_close($gi);
@@ -67,6 +76,7 @@ class MaxmindOld {
         $geo->longitude = (isset($obj->longitude)) ? ($obj->longitude) : null;
         $geo->city = (isset($obj->city)) ? ($obj->city) : null;
         $geo->method = $this->method;
+        $geo->isp = $obj->isp;
         return $geo;
     }
 

@@ -30,7 +30,11 @@ use GeoServices\GeoException;
  * @property boolean $isLongitudeRequired обязательно ли найти широту
  * @property boolean $isZipRequired обязательно ли найти zip
  * @property boolean $isIspRequired обязательно ли найти провайдера
+ * @property $accumulativeGeo Объект, накапливающий собранные гео-параметры
  * @author kubrey <kubrey@gmail.com>
+ * @todo Добавить поиск по ipv6
+ * @todo Добавить unit тесты
+ * @todo решить конфликт с ext-geoip в php, который мешает установке - переписать maxmind legacy api
  */
 class GeoService {
 
@@ -44,6 +48,8 @@ class GeoService {
     private $maxmindDb;
     private $maxmindOldDb;
     //
+    private $maxmindIspDb;
+
     public $isCityRequired = true;
     public $isCountryCodeRequired = true;
     public $isCountryNameRequired = true;
@@ -64,6 +70,7 @@ class GeoService {
     );
     private $lastResponce = null;
     private $errors = array();
+    private $accumulativeGeo;
 
     public function __construct() {
         
@@ -80,6 +87,20 @@ class GeoService {
             throw new GeoException('Wrong maxmind db path');
         }
         $this->maxmindDb = $file;
+        return $this;
+    }
+    
+    /**
+     * Указать полный путь к dat файлу с базой ISP от maxmind
+     * @param string $file
+     * @return \GeoServices\GeoService
+     * @throws GeoException
+     */
+    public function setMaxmindISPDb($file){
+        if (!is_file($file)) {
+            throw new GeoException('Wrong maxmind isp db path');
+        }
+        $this->maxmindIspDb = $file;
         return $this;
     }
 
@@ -126,6 +147,7 @@ class GeoService {
         $options = array();
         $options['maxminddb'] = $this->maxmindDb;
         $options['maxmindolddb'] = $this->maxmindOldDb;
+        $options['maxmindoldisp'] = $this->maxmindIspDb;
         asort($methods);
         foreach ($methods as $m => $mode) {
             if (!$mode) {
@@ -165,18 +187,20 @@ class GeoService {
                 }
                 $res = $geo->lookup($ip, $options);
                 $this->lastResponce = $res;
+                $this->accumulate();
                 $complete = true;
                 foreach ($properties as $pr) {
-                    if ($this->{'is' . ucfirst($pr) . 'Required'} === true && empty($this->lastResponce->{$pr})) {
+                    if ($this->{'is' . ucfirst($pr) . 'Required'} === true && empty($this->accumulativeGeo->{$pr})) {
                         $complete = false;
                         break;
                     }
                 }
-                if(!$complete){
+                if (!$complete) {
                     $this->errors[$m] = 'Not all required properties found';
                     continue;
                 }
-                return $res;
+//                return $res;
+                return $this->accumulativeGeo;
             } catch (\GeoServices\GeoException $ex) {
                 $this->errors[$m] = $ex->getMessage();
                 continue;
@@ -192,6 +216,21 @@ class GeoService {
     public function getCallStack() {
         return $this->errors;
     }
-    
+
+    /**
+     * Аккумуляция собранных данных
+     * @return GeoService
+     */
+    protected function accumulate() {
+        foreach ($this->lastResponce as $propName => $val) {
+            if(!isset($this->accumulativeGeo->{$propName}) || empty($this->accumulativeGeo->{$propName})){
+                $this->accumulativeGeo->{$propName} = $val;
+            }
+            if($propName == 'method'){
+                $this->accumulativeGeo->method = $val;
+            }
+        }
+        return $this;
+    }
 
 }

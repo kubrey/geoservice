@@ -33,7 +33,7 @@ class Maxmind {
             $data = $geo->city($ip);
             if (!$data) {
                 throw new GeoException('Failed to get geoip data from ' . $this->method);
-            }
+            }    
             return $this->formalize($data);
         } catch (\GeoIp2\Exception\AddressNotFoundException $ex) {
             throw new GeoException($ex->getMessage());
