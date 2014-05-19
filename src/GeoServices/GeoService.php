@@ -43,6 +43,7 @@ class GeoService {
     public $maxmindold = 1;
     private $maxmindDb;
     private $maxmindOldDb;
+    //
     public $isCityRequired = true;
     public $isCountryCodeRequired = true;
     public $isCountryNameRequired = true;
@@ -51,6 +52,7 @@ class GeoService {
     public $isRegionNameRequired = false;
     public $isIspRequired = false;
     public $isZipRequired = false;
+    //
     private $configs = array(
         'Maxmind' => array('type' => 'standalone'),
         'Ipgeobaseru' => array('type' => 'standalone', 'cc' => array('ua', 'ru')),
