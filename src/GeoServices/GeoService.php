@@ -34,7 +34,6 @@ use GeoServices\GeoException;
  * @author kubrey <kubrey@gmail.com>
  * @todo Добавить поиск по ipv6
  * @todo Добавить unit тесты
- * @todo решить конфликт с ext-geoip в php, который мешает установке - переписать maxmind legacy api
  */
 class GeoService {
 
@@ -47,9 +46,7 @@ class GeoService {
     public $maxmindold = 1;
     private $maxmindDb;
     private $maxmindOldDb;
-    //
     private $maxmindIspDb;
-
     public $isCityRequired = true;
     public $isCountryCodeRequired = true;
     public $isCountryNameRequired = true;

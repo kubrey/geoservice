@@ -4,6 +4,8 @@ namespace GeoServices\Services;
 
 use GeoServices\GeoObject;
 use GeoServices\GeoException;
+use MaxmindLegacy\GeoIPCity;
+use MaxmindLegacy\GeoIP;
 
 /**
  * Реализует Maxmind Legacy(по .dat базе)
@@ -27,17 +29,42 @@ class MaxmindOld {
         if (!isset($options[$this->method . 'db']) || !is_file($options[$this->method . 'db'])) {
             throw new GeoException('db file is invalid for ' . $this->method);
         }
-        $gi = geoip_open($options[$this->method . 'db'], GEOIP_STANDARD);
-        $object = GeoIP_record_by_addr($gi, $this->ip);
+
+        $r = new GeoIP();
+        try {
+            $g = $r->geoip_open($options[$this->method . 'db'], GeoIP::GEOIP_STANDARD);
+            $c = new GeoIPCity($g);
+            $object = $c->GeoIP_record_by_addr($ip);
+            $r->geoip_close();
+        } catch (\Exception $ex) {
+            throw new GeoException($ex->getMessage());
+        }
+
         if (isset($options[$this->method . 'isp']) && is_file($options[$this->method . 'isp'])) {
-            $gisp = geoip_open($options[$this->method . 'isp'], GEOIP_ISP_EDITION);
-            $isp = GeoIP_record_by_addr($gisp, $ip);
-            $object->isp = $isp->region;
-            geoip_close($gisp);
+            $risp = new GeoIP();
+            try {
+                $gisp = $risp->geoip_open($options[$this->method . 'isp'], GeoIP::GEOIP_ISP_EDITION);
+                $cisp = new GeoIPCity($gisp);
+                $isp = $cisp->GeoIP_record_by_addr($ip);
+                $object->isp = $isp->region;
+                $risp->geoip_close();
+            } catch (Exception $ex) {
+                throw new GeoException($ex->getMessage());
+            }
         } else {
             $object->isp = null;
         }
 
+//        $gi = geoip_open($options[$this->method . 'db'], GEOIP_STANDARD);
+//        $object = GeoIP_record_by_addr($gi, $this->ip);
+//        if (isset($options[$this->method . 'isp']) && is_file($options[$this->method . 'isp'])) {
+//            $gisp = geoip_open($options[$this->method . 'isp'], GEOIP_ISP_EDITION);
+//            $isp = $cis->GeoIP_record_by_addr($gisp, $ip);
+//            $object->isp = $isp->region;
+//            geoip_close($gisp);
+//        } else {
+//            $object->isp = null;
+//        }
         //
         if (is_object($object)) {
             foreach ($object as $k => $oitem) {
@@ -56,7 +83,7 @@ class MaxmindOld {
             throw new GeoException("Failed to get geo-data by " . $this->method);
         }
 
-        geoip_close($gi);
+//        geoip_close($gi);
         //
 
         return $this->formalize($obj);

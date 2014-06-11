@@ -24,7 +24,8 @@
 ```json
 {
     "require": {
-        "kubrey/geoservice": "dev-master"
+        "kubrey/geoservice": "dev-master",
+        "kubrey/maxgeo": "dev-master"
     },
     "minimum-stability": "dev",
     "repositories":[
@@ -35,6 +36,10 @@
         {
             "type":"git",
             "url":"https://bitbucket.org/kubrey/ipgeobase"
+        },
+        {
+            "type":"git",
+            "url":"https://bitbucket.org/kubrey/maxgeo"
         }
     ]
 }
