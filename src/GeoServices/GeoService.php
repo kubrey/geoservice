@@ -193,7 +193,7 @@ class GeoService {
                     }
                 }
                 if (!$complete) {
-                    $this->errors[$m] = 'Not all required properties found';
+                     $this->errors[$m] = $m.' found'.print_r($this->lastResponce,true). '; Not all required properties found';
                     continue;
                 }
 //                return $res;
