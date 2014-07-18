@@ -53,7 +53,7 @@ class MaxmindOld {
             } catch (Exception $ex) {
                 throw new GeoException($ex->getMessage());
             }
-        } elseif(is_object($isp)) {
+        } elseif(is_object($object)) {
             $object->isp = null;
         }
 
