@@ -40,7 +40,7 @@ class MaxmindOld {
             throw new GeoException($ex->getMessage());
         }
 
-        if (isset($options[$this->method . 'isp']) && is_file($options[$this->method . 'isp'])) {
+        if (isset($options[$this->method . 'isp']) && is_file($options[$this->method . 'isp']) && is_object($object)) {
             $risp = new GeoIP();
             try {
                 $gisp = $risp->geoip_open($options[$this->method . 'isp'], GeoIP::GEOIP_ISP_EDITION);
