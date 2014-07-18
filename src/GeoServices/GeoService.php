@@ -70,7 +70,7 @@ class GeoService {
     private $accumulativeGeo;
 
     public function __construct() {
-        
+        $this->accumulativeGeo=  new \stdClass();
     }
 
     /**

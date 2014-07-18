@@ -27,7 +27,7 @@ class Geobytes {
         $url = $this->url . $ip;
         $tags = get_meta_tags($url);
         $data = json_decode(json_encode($tags), false);
-        if ($data->city == 'Limit Exceeded') {
+        if (isset($data->city) && $data->city == 'Limit Exceeded') {
             throw new GeoException('Limit of queries per day Exceeded ');
         }
 

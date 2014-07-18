@@ -44,7 +44,7 @@ class Ipinfo {
             throw new GeoException('Curl error:' . $errors);
         }
         $data = json_decode($json);
-        if (isset($data->loc) || !empty($data->loc)) {
+        if (isset($data->loc) && !empty($data->loc) && strpos($data->loc, ',')!==false) {
             $coords = explode(',' . $data->loc);
             if (is_array($coords) && count($coords) == 1) {
                 $data->latitude = trim($coords[0]);
