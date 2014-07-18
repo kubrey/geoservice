@@ -47,7 +47,7 @@ class MaxmindOld {
                 $cisp = new GeoIPCity($gisp);
                 $isp = $cisp->GeoIP_record_by_addr($ip);
 
-                $object->isp = (is_object($isp) ? $isp->region : null);
+                $object->isp = ((is_object($isp) && isset($isp->region)) ? $isp->region : null);
 
                 $risp->geoip_close();
             } catch (Exception $ex) {
