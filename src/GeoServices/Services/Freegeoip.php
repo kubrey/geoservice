@@ -44,7 +44,7 @@ class Freegeoip {
         
         $data = json_decode($json);
 
-        return $data;
+        return $this->formalize($data);
     }
     /**
      * 
