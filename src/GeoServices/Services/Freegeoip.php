@@ -21,10 +21,13 @@ class Freegeoip {
      * @throws GeoException
      */
     public function lookup($ip,$options = array()) {
+        if(!filter_var($ip, FILTER_VALIDATE_IP)){
+            throw new GeoException('Invalid IP address is set');
+        }
         $this->ip = $ip;
         $url = $this->url . $ip;
 
-        $options = array(
+        $curlOptions = array(
             CURLOPT_HEADER => false,
             CURLOPT_URL=>$url,
             CURLOPT_FOLLOWLOCATION => true,
@@ -33,7 +36,7 @@ class Freegeoip {
             CURLOPT_TIMEOUT => 5
         );
         $ch = curl_init();
-        if (!curl_setopt_array($ch, $options)) {
+        if (!curl_setopt_array($ch, $curlOptions)) {
             throw new GeoException('Failed to set curl options');
         }
         $json = curl_exec($ch);

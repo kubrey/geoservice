@@ -24,6 +24,9 @@ class Maxmind {
      * @throws GeoException
      */
     public function lookup($ip, $options = array()) {
+        if(!filter_var($ip, FILTER_VALIDATE_IP)){
+            throw new GeoException('Invalid IP address is set');
+        }
         $this->ip = $ip;
         if (!isset($options[$this->method.'db']) || !is_file($options[$this->method.'db'])) {
             throw new GeoException('db file is invalid for ' . $this->method);

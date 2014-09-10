@@ -23,6 +23,9 @@ class Geobytes {
      * @throws GeoException
      */
     public function lookup($ip,$options = array()) {
+        if(!filter_var($ip, FILTER_VALIDATE_IP)){
+            throw new GeoException('Invalid IP address is set');
+        }
         $this->ip = $ip;
         $url = $this->url . $ip;
         $tags = get_meta_tags($url);
