@@ -65,7 +65,7 @@ class GeoService {
         'Geobytes' => array('type' => 'service'),
         'Maxmindold' => array('type' => 'standalone')
     );
-    private $lastResponce = null;
+    private $lastResponce = array();
     private $errors = array();
     private $accumulativeGeo;
 
