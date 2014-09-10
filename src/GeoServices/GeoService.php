@@ -122,6 +122,9 @@ class GeoService {
      * @throws GeoException
      */
     public function lookup($ip) {
+        if(!filter_var($ip, FILTER_VALIDATE_IP)){
+            throw new GeoException('Invalid IP address is set');
+        }
         $methods = array();
         foreach ($this->configs as $method => $prop) {
             if (isset($this->{strtolower($method)}) && $this->{strtolower($method)}) {
