@@ -28,7 +28,7 @@ class Maxmind {
             throw new GeoException('Invalid IP address is set');
         }
         $this->ip = $ip;
-        if (!isset($options[$this->method.'db']) || !is_file($options[$this->method.'db'])) {
+        if (!isset($options[$this->method.'db']) || !is_file($options[$this->method.'db']) || !is_readable($options[$this->method.'db']) || strtolower(end(explode('.',$options[$this->method.'db']))!='mmdb')) {
             throw new GeoException('db file is invalid for ' . $this->method);
         }
         $geo = new Reader($options[$this->method.'db']);
