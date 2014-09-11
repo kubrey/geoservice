@@ -24,6 +24,10 @@
         {
             "type": "git",
             "url": "https://bitbucket.org/kubrey/maxgeo"
+        },
+        {
+            "type": "git",
+            "url": "https://bitbucket.org/kubrey/ipgeobase"
         }
     ],
     "authors": [
