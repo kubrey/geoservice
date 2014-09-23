@@ -70,7 +70,7 @@ class GeoService {
     private $accumulativeGeo;
 
     public function __construct() {
-        $this->accumulativeGeo=  new \stdClass();
+        $this->accumulativeGeo=  new \GeoServices\GeoObject;
     }
 
     /**
@@ -186,6 +186,7 @@ class GeoService {
                         break;
                 }
                 $res = $geo->lookup($ip, $options);
+                
                 $this->lastResponce = $res;
                 $this->accumulate();
                 $complete = true;
@@ -199,7 +200,6 @@ class GeoService {
                      $this->errors[$m] = $m.' found'.print_r($this->lastResponce,true). '; Not all required properties found';
                     continue;
                 }
-//                return $res;
                 return $this->accumulativeGeo;
             } catch (\GeoServices\GeoException $ex) {
                 $this->errors[$m] = $ex->getMessage();

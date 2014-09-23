@@ -18,6 +18,7 @@ class GeoServiceTest extends \PHPUnit_Framework_TestCase {
      */
     protected function setUp() {
         $this->object = new GeoService;
+        $this->object->lookup('185.10.22.56');
     }
 
     /**
@@ -29,58 +30,62 @@ class GeoServiceTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @covers GeoServices\GeoService::setMaxmindDb
-     * @todo   Implement testSetMaxmindDb().
+     * @expectedException \GeoServices\GeoException
      */
-    public function testSetMaxmindDb() {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+    public function testMaxmindDbWrongFile() {
+        $this->object->setMaxmindDb('');
     }
 
     /**
-     * @covers GeoServices\GeoService::setMaxmindISPDb
-     * @todo   Implement testSetMaxmindISPDb().
+     * @expectedException \GeoServices\GeoException
      */
-    public function testSetMaxmindISPDb() {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+    public function testMaxmindOldDbWrongFile() {
+        $this->object->setMaxmindOldDb('');
     }
 
     /**
-     * @covers GeoServices\GeoService::setMaxmindOldDb
-     * @todo   Implement testSetMaxmindOldDb().
+     * @expectedException \GeoServices\GeoException
      */
-    public function testSetMaxmindOldDb() {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+    public function testMaxmindIspDbWrongFile() {
+        $this->object->setMaxmindISPDb('dfghdfgdfg.invalid');
     }
 
     /**
-     * @covers GeoServices\GeoService::lookup
-     * @todo   Implement testLookup().
+     * @expectedException \GeoServices\GeoException
      */
-    public function testLookup() {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+    public function testLookupInvalidIp() {
+        $this->object->lookup('invalid');
     }
 
     /**
-     * @covers GeoServices\GeoService::getCallStack
-     * @todo   Implement testGetCallStack().
+     * @expectedException Exception
      */
-    public function testGetCallStack() {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-                'This test has not been implemented yet.'
-        );
+    public function testEmptyLookup() {
+        $this->object->isCityRequired = false;
+        $this->object->isCountryCodeRequired = false;
+        $this->object->isCountryNameRequired = false;
+        $this->object->lookup('185.10.22.56');
+        
     }
+    
+    /**
+     * @expectedException \GeoServices\GeoException
+     */
+    public function testNoMethodsLookup(){
+        $this->object->maxmind = false;
+        $this->object->maxmindold = false;
+        $this->object->freegeoip = false;
+        $this->object->geobytes = false;
+        $this->object->ipgeobase = false;
+        $this->object->ipinfo = false;
+        $this->object->telize = false;
+        $this->object->lookup('185.10.22.56');
+    }
+    
+    public function testLookupUsual(){
+        $data = $this->object->lookup('185.10.22.56');
+        $this->assertInstanceOf('\GeoServices\GeoObject', $data);
+    }
+
 
 }
