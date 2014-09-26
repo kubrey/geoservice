@@ -29,7 +29,9 @@ class MaxmindOld {
             throw new GeoException('Invalid IP address is set');
         }
         $this->ip = $ip;
-        if (!isset($options[$this->method . 'db']) || !is_file($options[$this->method . 'db']) || !is_readable($options[$this->method . 'db']) || strtolower(end('.',$options[$this->method . 'db']))!='dat') {
+        $parts = explode('.',$options[$this->method . 'db']);
+        $ext = (is_array($parts) ? end($parts) : '');
+        if (!isset($options[$this->method . 'db']) || !is_file($options[$this->method . 'db']) || !is_readable($options[$this->method . 'db']) || strtolower($ext)!='dat') {
             throw new GeoException('db file is invalid for ' . $this->method);
         }
 
