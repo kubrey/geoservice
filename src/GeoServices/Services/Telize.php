@@ -1,34 +1,37 @@
 <?php
 
 namespace GeoServices\Services;
+
 use GeoServices\GeoException;
 use GeoServices\GeoObject;
+
 /**
  * Реализует Telize
  *
  * @author kubrey
  */
 class Telize {
+
     private $method = 'telize';
     private $url = 'http://www.telize.com/geoip/';
     private $ip;
 
-     /**
+    /**
      * 
      * @param string $ip
      * @param array $options
      * @return \GeoServices\GeoObject
      * @throws GeoException
      */
-    public function lookup($ip,$options = array()) {
-        if(!filter_var($ip, FILTER_VALIDATE_IP)){
+    public function lookup($ip, $options = array()) {
+        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
             throw new GeoException('Invalid IP address is set');
         }
         $this->ip = $ip;
         $url = $this->url . $ip;
         $options = array(
             CURLOPT_HEADER => false,
-            CURLOPT_URL=>$url,
+            CURLOPT_URL => $url,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_USERAGENT => "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.6) Gecko/20070725 Firefox/3.0.0.6",
@@ -47,6 +50,7 @@ class Telize {
 
         return $this->formalize($data);
     }
+
     /**
      * 
      * @param \stdClass $obj
@@ -63,7 +67,8 @@ class Telize {
         $geo->city = (isset($obj->city)) ? ($obj->city) : null;
         $geo->isp = (isset($obj->isp)) ? ($obj->isp) : null;
         $geo->method = $this->method;
-        
+
         return $geo;
     }
+
 }

@@ -1,5 +1,7 @@
 <?php
+
 namespace GeoServices\Services;
+
 use GeoServices\GeoException;
 use GeoServices\GeoObject;
 
@@ -9,6 +11,7 @@ use GeoServices\GeoObject;
  * @author kubrey
  */
 class Freegeoip {
+
     private $method = 'freegeoip';
     private $url = 'http://freegeoip.net/json/';
     private $ip;
@@ -20,8 +23,8 @@ class Freegeoip {
      * @return \GeoServices\GeoObject
      * @throws GeoException
      */
-    public function lookup($ip,$options = array()) {
-        if(!filter_var($ip, FILTER_VALIDATE_IP)){
+    public function lookup($ip, $options = array()) {
+        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
             throw new GeoException('Invalid IP address is set');
         }
         $this->ip = $ip;
@@ -29,7 +32,7 @@ class Freegeoip {
 
         $curlOptions = array(
             CURLOPT_HEADER => false,
-            CURLOPT_URL=>$url,
+            CURLOPT_URL => $url,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_USERAGENT => "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.6) Gecko/20070725 Firefox/3.0.0.6",
@@ -44,11 +47,12 @@ class Freegeoip {
         if (!empty($errors)) {
             throw new GeoException('Curl error:' . $errors);
         }
-        
+
         $data = json_decode($json);
 
         return $this->formalize($data);
     }
+
     /**
      * 
      * @param \stdClass $obj
@@ -65,7 +69,8 @@ class Freegeoip {
         $geo->city = (isset($obj->city)) ? ($obj->city) : null;
         $geo->zip = (isset($obj->zipcode)) ? ($obj->zipcode) : null;
         $geo->method = $this->method;
-        
+
         return $geo;
     }
+
 }

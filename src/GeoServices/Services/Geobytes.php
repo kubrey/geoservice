@@ -1,8 +1,10 @@
 <?php
 
 namespace GeoServices\Services;
+
 use GeoServices\GeoException;
 use GeoServices\GeoObject;
+
 /**
  * Реализует сервис Geobytes
  * Cервис имеет ограничения  на количество вызовов в сутки
@@ -10,20 +12,20 @@ use GeoServices\GeoObject;
  * @author kubrey
  */
 class Geobytes {
-    
+
     private $method = 'geobytes';
     private $url = 'http://www.geobytes.com/IpLocator.htm?GetLocation&template=php3.txt&IpAddress=';
     private $ip;
 
-     /**
+    /**
      * 
      * @param string $ip
      * @param array $options
      * @return \GeoServices\GeoObject
      * @throws GeoException
      */
-    public function lookup($ip,$options = array()) {
-        if(!filter_var($ip, FILTER_VALIDATE_IP)){
+    public function lookup($ip, $options = array()) {
+        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
             throw new GeoException('Invalid IP address is set');
         }
         $this->ip = $ip;
@@ -36,6 +38,7 @@ class Geobytes {
 
         return $this->formalize($data);
     }
+
     /**
      * 
      * @param \stdClass $obj
@@ -51,7 +54,8 @@ class Geobytes {
         $geo->longitude = (isset($obj->longitude)) ? ($obj->longitude) : null;
         $geo->city = (isset($obj->city)) ? ($obj->city) : null;
         $geo->method = $this->method;
-        
+
         return $geo;
     }
+
 }

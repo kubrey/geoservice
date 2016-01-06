@@ -17,7 +17,7 @@ namespace GeoServices;
  * @author kubrey
  */
 class GeoObject {
-    
+
     public $ip;
     public $countryName;
     public $city;
@@ -28,17 +28,17 @@ class GeoObject {
     public $countryCode; //2letter
     public $isp;
     public $method;
-    
-    
+
     public function __construct() {
         
     }
-    
+
     /**
      * Возвращает массив свойств гео-объекта
      * @return array
      */
-    public static function getProperties(){
-        return array('countryName','city','latitude','longitude','zip','regionName','countryCode','isp');
+    public static function getProperties() {
+        return array('countryName', 'city', 'latitude', 'longitude', 'zip', 'regionName', 'countryCode', 'isp');
     }
+
 }
