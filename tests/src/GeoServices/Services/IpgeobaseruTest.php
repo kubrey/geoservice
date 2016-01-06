@@ -11,8 +11,8 @@ class IpgeobaseruTest extends \PHPUnit_Framework_TestCase {
      * @var Ipgeobaseru
      */
     protected $object;
-    private $cidr = '/var/www/geostuff/data/www/ipservice.loc/vendor/kubrey/ipgeobase/src/etc/cidr_optim.txt';
-    private $cities = '/var/www/geostuff/data/www/ipservice.loc/vendor/kubrey/ipgeobase/src/etc/cities.txt';
+    private $cidr = 'cidr_optim.txt';
+    private $cities = 'cities.txt';
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -20,6 +20,9 @@ class IpgeobaseruTest extends \PHPUnit_Framework_TestCase {
      */
     protected function setUp() {
         $this->object = new Ipgeobaseru;
+        $folder = '/var/www/stuff/data/www/geoservice.loc/vendor/kubrey/ipgeobase/src/etc/';
+        $this->cidr = $folder . $this->cidr;
+        $this->cities = $folder . $this->cities;
     }
 
     /**
@@ -30,7 +33,7 @@ class IpgeobaseruTest extends \PHPUnit_Framework_TestCase {
         
     }
 
-   /**
+    /**
      * @expectedException GeoServices\GeoException
      */
     public function testInvalidIpException() {
@@ -40,13 +43,13 @@ class IpgeobaseruTest extends \PHPUnit_Framework_TestCase {
     public function testNonExistingCountryDb() {
         $this->assertFileExists($this->cidr, "No country file for ipgeobase");
     }
-    
+
     public function testNonExistingCityDb() {
         $this->assertFileExists($this->cities, "No cities file for ipgeobase");
     }
 
     public function testValidReturn() {
-        $ip = '78.109.16.159';//нужен российский ip
+        $ip = '78.109.16.159'; //нужен российский ip
         $this->assertInstanceOf('GeoServices\GeoObject', $this->object->lookup($ip), 'Return wrong instance');
     }
 

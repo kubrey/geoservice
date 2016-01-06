@@ -18,7 +18,7 @@ class GeoServiceTest extends \PHPUnit_Framework_TestCase {
      */
     protected function setUp() {
         $this->object = new GeoService;
-        $this->object->lookup('185.10.22.56');
+//        $this->object->lookup('185.10.22.56');
     }
 
     /**
@@ -65,13 +65,12 @@ class GeoServiceTest extends \PHPUnit_Framework_TestCase {
         $this->object->isCountryCodeRequired = false;
         $this->object->isCountryNameRequired = false;
         $this->object->lookup('185.10.22.56');
-        
     }
-    
+
     /**
      * @expectedException \GeoServices\GeoException
      */
-    public function testNoMethodsLookup(){
+    public function testNoMethodsLookup() {
         $this->object->maxmind = false;
         $this->object->maxmindold = false;
         $this->object->freegeoip = false;
@@ -81,11 +80,12 @@ class GeoServiceTest extends \PHPUnit_Framework_TestCase {
         $this->object->telize = false;
         $this->object->lookup('185.10.22.56');
     }
-    
-    public function testLookupUsual(){
+
+    public function testLookupUsual() {
+        $this->object->setMaxmindOldDb('/var/www/GeoLiteCity.dat');
+        $this->object->setMaxmindDb('/var/www/GeoLite2-City.mmdb');
         $data = $this->object->lookup('185.10.22.56');
         $this->assertInstanceOf('\GeoServices\GeoObject', $data);
     }
-
 
 }
