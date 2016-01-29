@@ -104,4 +104,10 @@ $g->ipinfo = 3;
 $g->isCityRequired = false; - поиск города не обязателен
 ```
 
+PHPUnit тесты, запуск из корня проекта:
+
+```
+/usr/bin/php vendor/phpunit/phpunit/phpunit --colors --bootstrap vendor/autoload.php tests
+```
+
 

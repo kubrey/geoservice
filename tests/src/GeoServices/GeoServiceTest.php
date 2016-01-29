@@ -82,10 +82,22 @@ class GeoServiceTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testLookupUsual() {
+        $this->object->maxmind = 1;
+        $this->object->maxmindold = 2;
+        $this->object->freegeoip = 3;
+        $this->object->geobytes = 4;
+        $this->object->ipgeobase = 5;
+        $this->object->ipinfo = 5;
+        $this->object->telize = 5;
         $this->object->setMaxmindOldDb('/var/www/GeoLiteCity.dat');
         $this->object->setMaxmindDb('/var/www/GeoLite2-City.mmdb');
-        $data = $this->object->lookup('185.10.22.56');
-        $this->assertInstanceOf('\GeoServices\GeoObject', $data);
+        //valid ip
+        try {
+             $data = $this->object->lookup('130.211.158.236');
+             $this->assertInstanceOf('\GeoServices\GeoObject', $data);
+        } catch (\GeoServices\GeoException $ex) {
+            
+        }
     }
 
 }

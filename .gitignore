@@ -1,4 +1,5 @@
 /nbproject/*
+.idea
 index.php
 .log
 .txt
