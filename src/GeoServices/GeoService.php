@@ -70,7 +70,7 @@ class GeoService {
     private $accumulativeGeo;
 
     public function __construct() {
-        $this->accumulativeGeo=  new \GeoServices\GeoObject;
+        $this->accumulativeGeo = new \GeoServices\GeoObject;
     }
 
     /**
@@ -86,14 +86,14 @@ class GeoService {
         $this->maxmindDb = $file;
         return $this;
     }
-    
+
     /**
      * Указать полный путь к dat файлу с базой ISP от maxmind
      * @param string $file
      * @return \GeoServices\GeoService
      * @throws GeoException
      */
-    public function setMaxmindISPDb($file){
+    public function setMaxmindISPDb($file) {
         if (!is_file($file)) {
             throw new GeoException('Wrong maxmind isp db path');
         }
@@ -122,7 +122,7 @@ class GeoService {
      * @throws GeoException
      */
     public function lookup($ip) {
-        if(!filter_var($ip, FILTER_VALIDATE_IP)){
+        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
             throw new GeoException('Invalid IP address is set');
         }
         $methods = array();
@@ -186,18 +186,20 @@ class GeoService {
                         break;
                 }
                 $res = $geo->lookup($ip, $options);
-                
+
                 $this->lastResponce = $res;
                 $this->accumulate();
                 $complete = true;
+                $notfound = array();
                 foreach ($properties as $pr) {
                     if ($this->{'is' . ucfirst($pr) . 'Required'} === true && empty($this->accumulativeGeo->{$pr})) {
                         $complete = false;
+                        $notfound[] = $pr;
                         break;
                     }
                 }
                 if (!$complete) {
-                     $this->errors[$m] = $m.' found'.print_r($this->lastResponce,true). '; Not all required properties found';
+                    $this->errors[$m] = $m . ' found' . print_r($this->lastResponce, true) . '; Not all required properties found(' . implode(',', $notfound) . ')';
                     continue;
                 }
                 return $this->accumulativeGeo;
@@ -223,14 +225,22 @@ class GeoService {
      */
     protected function accumulate() {
         foreach ($this->lastResponce as $propName => $val) {
-            if(!isset($this->accumulativeGeo->{$propName}) || empty($this->accumulativeGeo->{$propName})){
+            if (!isset($this->accumulativeGeo->{$propName}) || empty($this->accumulativeGeo->{$propName})) {
                 $this->accumulativeGeo->{$propName} = $val;
             }
-            if($propName == 'method'){
+            if ($propName == 'method') {
                 $this->accumulativeGeo->method = $val;
             }
         }
         return $this;
+    }
+    
+    /**
+     * 
+     * @return \GeoServices\GeoObject
+     */
+    public function getFound(){
+        return $this->accumulativeGeo;
     }
 
 }
