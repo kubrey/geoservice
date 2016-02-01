@@ -42,7 +42,7 @@ class GeoService {
     public $freegioip = 3;
     public $ipinfo = 5;
     public $geobytes = 6;
-    public $telize = 4;
+    public $telize = false;
     public $maxmindold = 1;
     private $maxmindDb;
     private $maxmindOldDb;
