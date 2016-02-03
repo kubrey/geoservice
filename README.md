@@ -12,6 +12,7 @@
  - Geobytes.com
  - Telize.com
  - Maxmind Legacy(v1)
+ - IpApi(ip-api.com)
 
 
 ### Установка через Composer ###
