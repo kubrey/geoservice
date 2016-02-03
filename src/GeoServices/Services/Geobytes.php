@@ -4,6 +4,7 @@ namespace GeoServices\Services;
 
 use GeoServices\GeoException;
 use GeoServices\GeoObject;
+use GeoServices\Services\Service;
 
 /**
  * Реализует сервис Geobytes
@@ -11,7 +12,7 @@ use GeoServices\GeoObject;
  *
  * @author kubrey
  */
-class Geobytes {
+class Geobytes implements Service{
 
     private $method = 'geobytes';
     private $url = 'http://www.geobytes.com/IpLocator.htm?GetLocation&template=php3.txt&IpAddress=';

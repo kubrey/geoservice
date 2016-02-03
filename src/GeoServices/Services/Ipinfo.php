@@ -4,13 +4,14 @@ namespace GeoServices\Services;
 
 use GeoServices\GeoException;
 use GeoServices\GeoObject;
+use GeoServices\Services\Service;
 
 /**
  * Реализует Ipinfo
  *
  * @author kubrey
  */
-class Ipinfo {
+class Ipinfo implements Service{
 
     private $method = 'ipinfo';
     private $url = 'http://ipinfo.io/';
@@ -30,7 +31,7 @@ class Ipinfo {
         $this->ip = $ip;
         $url = $this->url . $ip;
 
-        $options = array(
+        $optionsCurl = array(
             CURLOPT_HEADER => false,
             CURLOPT_URL => $url,
             CURLOPT_FOLLOWLOCATION => true,
@@ -38,7 +39,7 @@ class Ipinfo {
             CURLOPT_TIMEOUT => 5
         );
         $ch = curl_init();
-        if (!curl_setopt_array($ch, $options)) {
+        if (!curl_setopt_array($ch, $optionsCurl)) {
             throw new GeoException('Failed to set curl options');
         }
         $json = curl_exec($ch);

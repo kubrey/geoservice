@@ -6,13 +6,14 @@ use GeoServices\GeoObject;
 use GeoServices\GeoException;
 use MaxmindLegacy\GeoIPCity;
 use MaxmindLegacy\GeoIP;
+use GeoServices\Services\Service;
 
 /**
  * Реализует Maxmind Legacy(по .dat базе)
  *
  * @author kubrey <kubrey@gmail.com>
  */
-class MaxmindOld {
+class MaxmindOld implements Service{
 
     private $method = 'maxmindold';
     private $ip;

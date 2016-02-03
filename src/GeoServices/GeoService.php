@@ -2,13 +2,6 @@
 
 namespace GeoServices;
 
-use GeoServices\Services\Freegeoip;
-use GeoServices\Services\Geobytes;
-use GeoServices\Services\Ipgeobaseru;
-use GeoServices\Services\Ipinfo;
-use GeoServices\Services\Maxmind;
-use GeoServices\Services\Telize;
-use GeoServices\Services\MaxmindOld;
 use GeoServices\GeoException;
 
 /**
@@ -42,6 +35,7 @@ class GeoService {
     public $freegioip = 3;
     public $ipinfo = 5;
     public $geobytes = 6;
+    public $ipapi = 6;
     public $telize = false;
     public $maxmindold = 1;
     private $maxmindDb;
@@ -61,9 +55,10 @@ class GeoService {
         'Ipgeobaseru' => array('type' => 'standalone', 'cc' => array('ua', 'ru')),
         'Freegeoip' => array('type' => 'service'),
         'Ipinfo' => array('type' => 'service'),
+        'IpApi' => array('type' => 'service'),
         'Telize' => array('type' => 'service'),
         'Geobytes' => array('type' => 'service'),
-        'Maxmindold' => array('type' => 'standalone')
+        'MaxmindOld' => array('type' => 'standalone')
     );
     private $lastResponce = array();
     private $errors = array();
@@ -157,34 +152,12 @@ class GeoService {
             try {
                 if (array_key_exists('cc', $this->configs[$m])) {
                     //метод работающий под конкретные страны
-                    if (!empty($this->lastResponce) && !empty($this->lastResponce->countryCode) && !in_array($this->lastResponce->countryCode, $this->configs[$m]['cc'])) {
+                    if ($this->lastResponce && $this->lastResponce->countryCode && !in_array($this->lastResponce->countryCode, $this->configs[$m]['cc'])) {
                         continue;
                     }
                 }
-                //$geo = new $m(); не срабатывает, печаль
-                switch ($m) {
-                    case 'Maxmind':
-                        $geo = new Maxmind();
-                        break;
-                    case 'Ipgeobaseru':
-                        $geo = new Ipgeobaseru();
-                        break;
-                    case 'Telize':
-                        $geo = new Telize();
-                        break;
-                    case 'Freegeoip':
-                        $geo = new Freegeoip();
-                        break;
-                    case 'Geobytes':
-                        $geo = new Geobytes();
-                        break;
-                    case 'Ipinfo':
-                        $geo = new Ipinfo();
-                        break;
-                    case 'Maxmindold':
-                        $geo = new MaxmindOld();
-                        break;
-                }
+                $class = "GeoServices\Services\\" . $m;
+                $geo = new $class(); // не срабатывает, печаль
                 $res = $geo->lookup($ip, $options);
 
                 $this->lastResponce = $res;
@@ -192,7 +165,7 @@ class GeoService {
                 $complete = true;
                 $notfound = array();
                 foreach ($properties as $pr) {
-                    if ($this->{'is' . ucfirst($pr) . 'Required'} === true && empty($this->accumulativeGeo->{$pr})) {
+                    if ($this->{'is' . ucfirst($pr) . 'Required'} === true && !$this->accumulativeGeo->{$pr}) {
                         $complete = false;
                         $notfound[] = $pr;
                         break;
@@ -234,12 +207,12 @@ class GeoService {
         }
         return $this;
     }
-    
+
     /**
      * 
      * @return \GeoServices\GeoObject
      */
-    public function getFound(){
+    public function getFound() {
         return $this->accumulativeGeo;
     }
 

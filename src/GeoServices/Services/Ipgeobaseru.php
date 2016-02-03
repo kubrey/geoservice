@@ -5,13 +5,14 @@ namespace GeoServices\Services;
 use Ipgeobase\IpGeobase;
 use GeoServices\GeoException;
 use GeoServices\GeoObject;
+use GeoServices\Services\Service;
 
 /**
  * Реализует Ipgeobase с поиском по локальной базе, зависит от стороннего подключения
  *
  * @author kubrey
  */
-class Ipgeobaseru {
+class Ipgeobaseru implements Service{
 
     private $method = 'ipgeobaseru';
     private $ip;

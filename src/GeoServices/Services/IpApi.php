@@ -7,14 +7,14 @@ use GeoServices\GeoObject;
 use GeoServices\Services\Service;
 
 /**
- * Реализует Telize
+ * ip-api.com
  *
  * @author kubrey
  */
-class Telize implements Service {
+class IpApi implements Service{
 
-    private $method = 'telize';
-    private $url = 'http://www.telize.com/geoip/';
+    private $method = 'ipapi';
+    private $url = 'http://ip-api.com/json/';
     private $ip;
 
     /**
@@ -30,22 +30,28 @@ class Telize implements Service {
         }
         $this->ip = $ip;
         $url = $this->url . $ip;
+
         $optionsCurl = array(
             CURLOPT_HEADER => false,
             CURLOPT_URL => $url,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_USERAGENT => "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.6) Gecko/20070725 Firefox/3.0.0.6",
             CURLOPT_TIMEOUT => 5
         );
+
         $ch = curl_init();
         if (!curl_setopt_array($ch, $optionsCurl)) {
             throw new GeoException('Failed to set curl options');
         }
         $json = curl_exec($ch);
         $errors = curl_error($ch);
-        if (!empty($errors)) {
+
+        $info = curl_getinfo($ch);
+        if ($errors) {
             throw new GeoException('Curl error:' . $errors);
+        }
+        if (!isset($info['content_type']) || strtolower($info['content_type']) !== 'application/json; charset=utf-8') {
+              throw new GeoException('Content Type is not valid:' . $info['content_type']);
         }
         $data = json_decode($json);
 
@@ -54,19 +60,21 @@ class Telize implements Service {
 
     /**
      * 
-     * @param \stdClass $obj
-     * @return \GeoServices\GeoObject
+     * @param stdClass $obj
+     * @return GeoObject
      */
     private function formalize($obj) {
         $geo = new GeoObject();
         $geo->ip = $this->ip;
-        $geo->countryCode = (isset($obj->country_code)) ? strtolower($obj->country_code) : null;
+        $geo->countryCode = (isset($obj->countryCode)) ? strtolower($obj->countryCode) : null;
         $geo->countryName = (isset($obj->country)) ? ($obj->country) : null;
-        $geo->regionName = (isset($obj->region)) ? ($obj->region) : null;
-        $geo->latitude = (isset($obj->latitude)) ? ($obj->latitude) : null;
-        $geo->longitude = (isset($obj->longitude)) ? ($obj->longitude) : null;
+        $geo->regionName = (isset($obj->regionName)) ? ($obj->regionName) : null;
+        $geo->latitude = (isset($obj->lat)) ? ($obj->lat) : null;
+//        $geo->timezone = (isset($obj->latitude)) ? ($obj->latitude) : null;
+        $geo->longitude = (isset($obj->lon)) ? ($obj->lon) : null;
         $geo->city = (isset($obj->city)) ? ($obj->city) : null;
-        $geo->isp = (isset($obj->isp)) ? ($obj->isp) : null;
+        $geo->zip = (isset($obj->zip)) ? ($obj->zip) : null;
+        $geo->isp = (isset($obj->as)) ? ($obj->as) : null;
         $geo->method = $this->method;
 
         return $geo;

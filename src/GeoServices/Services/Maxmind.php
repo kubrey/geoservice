@@ -5,13 +5,14 @@ namespace GeoServices\Services;
 use GeoServices\GeoObject;
 use GeoServices\GeoException;
 use GeoIp2\Database\Reader;
+use GeoServices\Services\Service;
 
 /**
  * Реализует Maxmind, зависит от внешнего подключения
  *
  * @author kubrey
  */
-class Maxmind {
+class Maxmind implements Service{
 
     private $method = 'maxmind';
     private $ip;

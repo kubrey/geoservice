@@ -78,6 +78,7 @@ class GeoServiceTest extends \PHPUnit_Framework_TestCase {
         $this->object->ipgeobase = false;
         $this->object->ipinfo = false;
         $this->object->telize = false;
+        $this->object->ipapi = false;
         $this->object->lookup('185.10.22.56');
     }
 
@@ -88,6 +89,7 @@ class GeoServiceTest extends \PHPUnit_Framework_TestCase {
         $this->object->geobytes = 4;
         $this->object->ipgeobase = 5;
         $this->object->ipinfo = 5;
+        $this->object->ipapi = 6;
         $this->object->telize = false;
         $this->object->setMaxmindOldDb('/var/www/GeoLiteCity.dat');
         $this->object->setMaxmindDb('/var/www/GeoLite2-City.mmdb');

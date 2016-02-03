@@ -4,13 +4,14 @@ namespace GeoServices\Services;
 
 use GeoServices\GeoException;
 use GeoServices\GeoObject;
+use GeoServices\Services\Service;
 
 /**
  * Реализует freegeoip сервис
  *
  * @author kubrey
  */
-class Freegeoip {
+class Freegeoip implements Service{
 
     private $method = 'freegeoip';
     private $url = 'http://freegeoip.net/json/';
