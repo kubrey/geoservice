@@ -8,10 +8,14 @@ use GeoServices\Services\Service;
 
 /**
  * ip-api.com
+ * Usage limit: 150 requests per minute
+ * That's whay this service may be not useful as a primary geolocation service
+ * Overloading this requests leads to IP ban for whole site
+ * Unban url http://ip-api.com/docs/unban(captcha requires)
  *
  * @author kubrey
  */
-class IpApi implements Service{
+class IpApi implements Service {
 
     private $method = 'ipapi';
     private $url = 'http://ip-api.com/json/';
@@ -48,12 +52,25 @@ class IpApi implements Service{
 
         $info = curl_getinfo($ch);
         if ($errors) {
+            if (strpos($errors, 'Operation timed out') !== false) {
+                $ip = php_sapi_name() == 'cli' ? 'x.x.x.x(cli)' : filter_input(INPUT_SERVER, 'REMOTE_ADDR');
+                //very likely service has banned requester's ip
+                //needs to be unban manually
+                /**
+                 * @link http://ip-api.com/docs/unban submit your ip address
+                 */
+                $errors.="; seems that your ip address(" . $ip . ") was banned by " . $this->method . ". Use this link http://ip-api.com/docs/unban to handle that";
+            }
             throw new GeoException('Curl error:' . $errors);
         }
         if (!isset($info['content_type']) || strtolower($info['content_type']) !== 'application/json; charset=utf-8') {
-              throw new GeoException('Content Type is not valid:' . $info['content_type']);
+            throw new GeoException('Content Type is not valid:' . $info['content_type']);
         }
         $data = json_decode($json);
+        if (!isset($data->status) || $data->status != "success") {
+            $errmsg = (isset($data->message) ? $data->message : "");
+            throw new GeoException("Failed to get ip data: " . $errmsg);
+        }
 
         return $this->formalize($data);
     }
