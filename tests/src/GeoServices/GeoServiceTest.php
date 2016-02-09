@@ -87,7 +87,7 @@ class GeoServiceTest extends \PHPUnit_Framework_TestCase {
         $this->object->maxmindold = 2;
         $this->object->freegeoip = 3;
         $this->object->geobytes = 4;
-        $this->object->ipgeobase = 5;
+        $this->object->ipgeobase = 5    ;
         $this->object->ipinfo = 5;
         $this->object->ipapi = 6;
         $this->object->telize = false;

@@ -15,7 +15,7 @@ use GeoServices\Services\Service;
 class Geobytes implements Service{
 
     private $method = 'geobytes';
-    private $url = 'http://www.geobytes.com/IpLocator.htm?GetLocation&template=php3.txt&IpAddress=';
+    private $url = 'http://getcitydetails.geobytes.com/GetCityDetails?fqcn=';
     private $ip;
 
     /**
@@ -31,8 +31,39 @@ class Geobytes implements Service{
         }
         $this->ip = $ip;
         $url = $this->url . $ip;
-        $tags = get_meta_tags($url);
-        $data = json_decode(json_encode($tags), false);
+        
+        $optionsCurl = array(
+            CURLOPT_HEADER => false,
+            CURLOPT_URL => $url,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 5
+        );
+
+        $ch = curl_init();
+        if (!curl_setopt_array($ch, $optionsCurl)) {
+            throw new GeoException('Failed to set curl options');
+        }
+        $json = curl_exec($ch);
+        $errors = curl_error($ch);
+
+        $info = curl_getinfo($ch);
+        if ($errors) {
+            if (strpos($errors, 'Operation timed out') !== false) {
+                $ip = php_sapi_name() == 'cli' ? 'x.x.x.x(cli)' : filter_input(INPUT_SERVER, 'REMOTE_ADDR');
+                //very likely service has banned requester's ip
+                //needs to be unban manually
+                /**
+                 * @link http://ip-api.com/docs/unban submit your ip address
+                 */
+                $errors.="; seems that your ip address(" . $ip . ") was banned by " . $this->method . ". Use this link http://ip-api.com/docs/unban to handle that";
+            }
+            throw new GeoException('Curl error:' . $errors);
+        }
+//        if (!isset($info['content_type']) || strtolower($info['content_type']) !== 'application/json; charset=utf-8') {
+//            throw new GeoException('Content Type is not valid:' . $info['content_type']);
+//        }
+        $data = json_decode($json);
         if (isset($data->city) && $data->city == 'Limit Exceeded') {
             throw new GeoException('Limit of queries per day Exceeded ');
         }
@@ -48,12 +79,12 @@ class Geobytes implements Service{
     private function formalize($obj) {
         $geo = new GeoObject();
         $geo->ip = $this->ip;
-        $geo->countryCode = (isset($obj->iso2)) ? strtolower($obj->iso2) : null;
-        $geo->countryName = (isset($obj->country)) ? ($obj->country) : null;
-        $geo->regionName = (isset($obj->region)) ? ($obj->region) : null;
-        $geo->latitude = (isset($obj->latitude)) ? ($obj->latitude) : null;
-        $geo->longitude = (isset($obj->longitude)) ? ($obj->longitude) : null;
-        $geo->city = (isset($obj->city)) ? ($obj->city) : null;
+        $geo->countryCode = (isset($obj->geobytesinternet)) ? strtolower($obj->geobytesinternet) : null;
+        $geo->countryName = (isset($obj->geobytescountry)) ? ($obj->geobytescountry) : null;
+        $geo->regionName = (isset($obj->geobytesregion)) ? ($obj->geobytesregion) : null;
+        $geo->latitude = (isset($obj->geobyteslatitude)) ? ($obj->geobyteslatitude) : null;
+        $geo->longitude = (isset($obj->geobyteslongitude)) ? ($obj->geobyteslongitude) : null;
+        $geo->city = (isset($obj->geobytescity)) ? ($obj->geobytescity) : null;
         $geo->method = $this->method;
 
         return $geo;
