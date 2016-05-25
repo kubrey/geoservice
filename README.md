@@ -20,30 +20,10 @@
 #### Определение зависимостей ####
 
  [Composer](http://getcomposer.org/).
-Для установки добавьте `kubrey/geoservice` в Ваш `composer.json`. Если этого файла нет, то создайте его в корне сайта
+Для установки добавьте `kubrey/geoservice` в Ваш `composer.json`. Если этого файла нет, то создайте его в корне сайта(или выполните composer init)
 
-```json
-{
-    "require": {
-        "kubrey/geoservice": "dev-master",
-        "kubrey/maxgeo": "dev-master"
-    },
-    "minimum-stability": "dev",
-    "repositories":[
-        {
-            "type":"git",
-            "url":"https://bitbucket.org/kubrey/geoservice"
-        },
-        {
-            "type":"git",
-            "url":"https://bitbucket.org/kubrey/ipgeobase"
-        },
-        {
-            "type":"git",
-            "url":"https://bitbucket.org/kubrey/maxgeo"
-        }
-    ]
-}
+```
+composer require kubrey/geoservice
 ```
 
 #### Установка Composer ####
@@ -52,14 +32,6 @@
 
 ```
 curl -s http://getcomposer.org/installer | php
-```
-
-#### Установка зависимостей ####
-
-Выполнить в корне проекта: 
-
-```
-php composer.phar install
 ```
 
 #### Автолоадер ####
