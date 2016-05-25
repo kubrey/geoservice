@@ -9,14 +9,14 @@
     "ip service",
     "free geo location"
   ],
-  "version": "1.6.2",
+  "version": "1.6.3",
   "license": "MIT",
   "require": {
     "php": ">=5.3.0",
     "kubrey/ipgeobase": "*",
     "geoip2/geoip2": "0.6.*",
     "kubrey/maxgeo": "*",
-    "phpunit/phpunit-skeleton-generator": "dev-master",
+    "phpunit/phpunit-skeleton-generator": "*",
     "phpunit/phpunit-selenium": "1.4.1"
   },
   "require-dev": {
