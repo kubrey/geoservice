@@ -9,7 +9,7 @@
     "ip service",
     "free geo location"
   ],
-  "version": "1.6.0",
+  "version": "1.6.1",
   "license": "MIT",
   "require": {
     "php": ">=5.3.0",
