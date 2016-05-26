@@ -53,9 +53,9 @@ use GeoServices\GeoException;
 
 $g = new GeoService();
 try {
-    //установка полного пути к базе maxmind (если она используется)
+    //set maxmind v2  absolute path to mmdb file(if you want to use this method)
     $g->setMaxmindDb(dirname(__FILE__) . '/GeoLite2-City.mmdb');
-    //установка полного пути к базе maxmind legacy, если она используется
+    //set maxmind-legacy  absolute path to dat file(if you want to use this method)
     $g->setMaxmindOldDb(dirname(__FILE__).'/GeoLiteCity.dat');
     $data = $g->lookup('95.153.74.242');
     var_dump($data->city);
@@ -64,7 +64,7 @@ try {
 }
 ```
 
-`$data` is an instance of `GeoObject`, containing this properties:
+`$data` is an instance of `GeoObject`, containing these properties:
 
  - countryName
  - city
@@ -78,7 +78,7 @@ try {
 To set your own method priority:
 
 ```
-$g->maxmind = 1;//run thirst
+$g->maxmind = 1;//run first
 $g->ipgeobaseru = false;//do not use
 $g->ipinfo = 3;
 ```
