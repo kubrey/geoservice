@@ -16,7 +16,8 @@ namespace GeoServices;
  *
  * @author kubrey
  */
-class GeoObject {
+class GeoObject
+{
 
     public $ip;
     public $countryName;
@@ -30,7 +31,7 @@ class GeoObject {
     public $method;
 
     public function __construct() {
-        
+
     }
 
     /**

@@ -3,18 +3,18 @@
 namespace GeoServices;
 
 use GeoServices\GeoException;
+use GeoServices\Services\Service;
 
 /**
  * Класс поиска гео-данных по IP-адресу
- * @see https://bitbucket.org/kubrey/geoservice
+ * @see https://github.com/kubrey/geoservice
  * @property  boolean|int $maxmind False - если не использовать, int - прио
  * @property  boolean|int $ipgeobase False - если не использовать, int - прио
  * @property  boolean|int $freegeoip False - если не использовать, int - прио
  * @property  boolean|int $ipinfo False - если не использовать, int - прио
  * @property  boolean|int $geobytes False - если не использовать, int - прио
  * @property  boolean|int $telize False - если не использовать, int - прио
- * @property  boolean|int $telize False - если не использовать, int - прио
- * 
+ *
  * @property boolean $isCityRequired обязательно ли найти город
  * @property boolean $isCountryCodeRequired обязательно ли найти код страны
  * @property boolean $isCountryNameRequired обязательно ли найти название старны
@@ -24,11 +24,14 @@ use GeoServices\GeoException;
  * @property boolean $isZipRequired обязательно ли найти zip
  * @property boolean $isIspRequired обязательно ли найти провайдера
  * @property $accumulativeGeo Объект, накапливающий собранные гео-параметры
- * @author kubrey <kubrey@gmail.com>
+ *
+ * @property GeoObject|bool $lastResponse
+ * @author kubrey <kubrey.work@gmail.com>
  * @todo Добавить поиск по ipv6
  * @todo Добавить unit тесты
  */
-class GeoService {
+class GeoService
+{
 
     public $maxmind = 1;
     public $ipgeobase = 2;
@@ -60,12 +63,12 @@ class GeoService {
         'Geobytes' => array('type' => 'service'),
         'MaxmindOld' => array('type' => 'standalone')
     );
-    private $lastResponce = array();
+    private $lastResponse;
     private $errors = array();
     private $accumulativeGeo;
 
     public function __construct() {
-        $this->accumulativeGeo = new \GeoServices\GeoObject;
+        $this->accumulativeGeo = new GeoObject;
     }
 
     /**
@@ -152,15 +155,18 @@ class GeoService {
             try {
                 if (array_key_exists('cc', $this->configs[$m])) {
                     //метод работающий под конкретные страны
-                    if ($this->lastResponce && $this->lastResponce->countryCode && !in_array($this->lastResponce->countryCode, $this->configs[$m]['cc'])) {
+                    if ($this->lastResponse && $this->lastResponse->countryCode && !in_array($this->lastResponse->countryCode, $this->configs[$m]['cc'])) {
                         continue;
                     }
                 }
                 $class = "GeoServices\Services\\" . $m;
-                $geo = new $class(); // не срабатывает, печаль
+                $geo = new $class();
                 $res = $geo->lookup($ip, $options);
+                /**
+                 * @var GeoObject $res
+                 */
 
-                $this->lastResponce = $res;
+                $this->lastResponse = $res;
                 $this->accumulate();
                 $complete = true;
                 $notfound = array();
@@ -172,11 +178,11 @@ class GeoService {
                     }
                 }
                 if (!$complete) {
-                    $this->errors[$m] = $m . ' found' . print_r($this->lastResponce, true) . '; Not all required properties found(' . implode(',', $notfound) . ')';
+                    $this->errors[$m] = $m . ' found' . print_r($this->lastResponse, true) . '; Not all required properties found(' . implode(',', $notfound) . ')';
                     continue;
                 }
                 return $this->accumulativeGeo;
-            } catch (\GeoServices\GeoException $ex) {
+            } catch (GeoException $ex) {
                 $this->errors[$m] = $ex->getMessage();
                 continue;
             }
@@ -197,7 +203,7 @@ class GeoService {
      * @return GeoService
      */
     protected function accumulate() {
-        foreach ($this->lastResponce as $propName => $val) {
+        foreach ($this->lastResponse as $propName => $val) {
             if (!isset($this->accumulativeGeo->{$propName}) || empty($this->accumulativeGeo->{$propName})) {
                 $this->accumulativeGeo->{$propName} = $val;
             }
@@ -209,7 +215,7 @@ class GeoService {
     }
 
     /**
-     * 
+     *
      * @return \GeoServices\GeoObject
      */
     public function getFound() {

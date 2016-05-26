@@ -1,9 +1,9 @@
-# Complex Geo PHP API #
+# Geo data detection by IP
 
-### Реализация поиска geo-данных IP по нескольким гео-сервисам и локальным базам ###
+### Searching geo data by IP address ###
 
-### Описание ###
-Включает в себя методы:
+### Description ###
+Include several services:
 
  - Maxmind
  - Ipgeobase.ru
@@ -15,36 +15,37 @@
  - IpApi(ip-api.com)
 
 
-### Установка через Composer ###
-
-#### Определение зависимостей ####
+### Installation ###
 
  [Composer](http://getcomposer.org/).
-Для установки добавьте `kubrey/geoservice` в Ваш `composer.json`. Если этого файла нет, то создайте его в корне сайта(или выполните composer init)
+ 
+Add  `kubrey/geoservice` to your `composer.json`
+
+OR 
+
 
 ```
 composer require kubrey/geoservice
 ```
 
-#### Установка Composer ####
+If you have no composer, install beforehand:
 
-Выполнить в корне проекта: 
+Run in the project's root:
 
 ```
 curl -s http://getcomposer.org/installer | php
 ```
 
-#### Автолоадер ####
-
-Выполнить автозагрузку всех пакетов composer можно подключив скрипт:
-```
-require 'vendor/autoload.php';
-```
-
-### Применение ###
+And then :
 
 ```
+php composer.phar init
+```
 
+
+### Usage ###
+
+```
 require 'vendor/autoload.php';
 
 use GeoServices\GeoService;
@@ -56,28 +57,42 @@ try {
     $g->setMaxmindDb(dirname(__FILE__) . '/GeoLite2-City.mmdb');
     //установка полного пути к базе maxmind legacy, если она используется
     $g->setMaxmindOldDb(dirname(__FILE__).'/GeoLiteCity.dat');
-    $sec = $g->lookup('95.153.74.242');
-    var_dump($sec->city);
+    $data = $g->lookup('95.153.74.242');
+    var_dump($data->city);
 } catch (GeoException $ex) {
     echo $ex->getMessage();
 }
 ```
 
-Для установки произвольного порядка выполнения методов:
+`$data` is an instance of `GeoObject`, containing this properties:
+
+ - countryName
+ - city
+ - latitude
+ - longitude
+ - zip 
+ - regionName
+ - countryCode
+ - isp
+
+To set your own method priority:
 
 ```
-$g->maxmind = 1;//выполнить первым
-$g->ipgeobaseru = false;//не использовать
+$g->maxmind = 1;//run thirst
+$g->ipgeobaseru = false;//do not use
 $g->ipinfo = 3;
 ```
 
-Для установки обязательных гео-параметров:
+To set required geo parameters
 
 ```
 $g->isCityRequired = false; - поиск города не обязателен
 ```
 
-PHPUnit тесты, запуск из корня проекта:
+### Tests ###
+
+PHPUnit:
+
 
 ```
 /usr/bin/php vendor/phpunit/phpunit/phpunit --colors --bootstrap vendor/autoload.php tests
