@@ -28,7 +28,6 @@ use GeoServices\Services\Service;
  * @property GeoObject|bool $lastResponse
  * @author kubrey <kubrey.work@gmail.com>
  * @todo Добавить поиск по ipv6
- * @todo Добавить unit тесты
  */
 class GeoService
 {
@@ -74,14 +73,16 @@ class GeoService
     /**
      * Указать путь к базе maxmind *.mmdb
      * @param string $file Полный путь к базе *.mmdb
-     * @throws GeoException
      * @return \GeoServices\GeoService
      */
     public function setMaxmindDb($file) {
         if (!is_file($file)) {
-            throw new GeoException('Wrong maxmind db path');
+            $this->errors[] = "Wrong maxmind db path";
+            $this->maxmind = false;
+//            throw new GeoException('Wrong maxmind db path');
+        } else {
+            $this->maxmindDb = $file;
         }
-        $this->maxmindDb = $file;
         return $this;
     }
 
@@ -89,27 +90,28 @@ class GeoService
      * Указать полный путь к dat файлу с базой ISP от maxmind
      * @param string $file
      * @return \GeoServices\GeoService
-     * @throws GeoException
      */
     public function setMaxmindISPDb($file) {
         if (!is_file($file)) {
-            throw new GeoException('Wrong maxmind isp db path');
+            $this->errors[] = 'Wrong maxmind isp db path';
+        } else {
+            $this->maxmindIspDb = $file;
         }
-        $this->maxmindIspDb = $file;
         return $this;
     }
 
     /**
      * Указать путь к базе maxmind *.dat
      * @param string $file Полный путь к базе *.dat
-     * @throws GeoException
      * @return \GeoServices\GeoService
      */
     public function setMaxmindOldDb($file) {
         if (!is_file($file)) {
-            throw new GeoException('Wrong maxmindold db path');
+            $this->errors[] = 'Wrong maxmind old db path';
+            $this->maxmindold = false;
+        } else {
+            $this->maxmindOldDb = $file;
         }
-        $this->maxmindOldDb = $file;
         return $this;
     }
 
@@ -161,6 +163,10 @@ class GeoService
                 }
                 $class = "GeoServices\Services\\" . $m;
                 $geo = new $class();
+
+                /**
+                 * @var Service $geo
+                 */
                 $res = $geo->lookup($ip, $options);
                 /**
                  * @var GeoObject $res

@@ -29,14 +29,14 @@ class MaxmindOldTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @expectedException GeoServices\GeoException
+     * @expectedException \GeoServices\GeoException
      */
     public function testInvalidIpException() {
         $this->object->lookup('1.2.3');
     }
 
     /**
-     * @expectedException GeoServices\GeoException
+     * @expectedException \GeoServices\GeoException
      */
     public function testNonExistingDb() {
         $db = 'maxminddb.dat';
