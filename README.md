@@ -89,6 +89,19 @@ To set required geo parameters
 $g->isCityRequired = false; - поиск города не обязателен
 ```
 
+To set timeout in milliseconds:
+
+```
+$g->setGlobalTimeout(5000);
+```
+
+To set timeout for each online service in milliseconds:
+
+```
+$g->setRequestTimeout(1000);
+```
+
+
 ### Tests ###
 
 PHPUnit:
