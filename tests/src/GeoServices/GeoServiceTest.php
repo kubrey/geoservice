@@ -101,4 +101,45 @@ class GeoServiceTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * Too low global time asset
+     * @expectedException \GeoServices\GeoException
+     */
+    public function testGlobalTimeout() {
+        $this->object->setGlobalTimeout(1);
+        $this->object->telize = 1;
+        $this->object->maxmindold = 2;
+        $this->object->freegeoip = 3;
+        $this->object->geobytes = 4;
+        $this->object->ipgeobase = 5;
+        $this->object->ipinfo = 5;
+        $this->object->ipapi = false;
+        $this->object->isCountryCodeRequired = true;
+        $this->object->isCityRequired = true;
+        $this->object->isZipRequired = true;
+        $data = $this->object->lookup('31.30.31.30');
+
+    }
+
+    /**
+     * Request only using online services with too low timeout
+     * Should lead to exception
+     * @expectedException \GeoServices\GeoException
+     */
+    public function testServiceTimeout() {
+        $this->object->setRequestTimeout(1);
+        $this->object->maxmind = false;
+        $this->object->maxmindold = false;
+        $this->object->freegeoip = 3;
+        $this->object->geobytes = 4;
+        $this->object->ipgeobase = 5;
+        $this->object->ipinfo = 5;
+        $this->object->ipapi = 1;
+        $this->object->isCountryCodeRequired = true;
+        $this->object->isCityRequired = true;
+        $this->object->isZipRequired = true;
+        $data = $this->object->lookup('31.30.31.30');
+
+    }
+
 }

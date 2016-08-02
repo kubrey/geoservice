@@ -66,8 +66,36 @@ class GeoService
     private $errors = array();
     private $accumulativeGeo;
 
+    protected $serviceTimeout = 0;
+    protected $globalTimeout = 0;
+
     public function __construct() {
         $this->accumulativeGeo = new GeoObject;
+    }
+
+    /**
+     * @param int $timeMs timeout for curl in ms
+     * @return $this
+     */
+    public function setRequestTimeout($timeMs) {
+        if (!is_numeric($timeMs) || $timeMs <= 0) {
+            return $this;
+        }
+        $this->serviceTimeout = (int)$timeMs;
+        return $this;
+    }
+
+    /**
+     * If data hs not been found till specified time, further requests are ot executed and success:false in returned
+     * @param int $timeMs timeout for whole lookup in ms
+     * @return $this
+     */
+    public function setGlobalTimeout($timeMs) {
+        if (!is_numeric($timeMs) || $timeMs <= 0) {
+            return $this;
+        }
+        $this->globalTimeout = (int)$timeMs;
+        return $this;
     }
 
     /**
@@ -145,13 +173,20 @@ class GeoService
         }
 
         $options = array();
+        $options['timeout'] = $this->serviceTimeout ? $this->serviceTimeout : 2000;
         $options['maxminddb'] = $this->maxmindDb;
         $options['maxmindolddb'] = $this->maxmindOldDb;
         $options['maxmindoldisp'] = $this->maxmindIspDb;
         asort($methods);
+        $start = microtime(true) * 1000;
         foreach ($methods as $m => $mode) {
             if (!$mode) {
                 continue;
+            }
+            $current = microtime(true) * 1000;
+            if ($this->globalTimeout && (($current - $start) > $this->globalTimeout)) {
+                $this->errors[$m] = "Timeout(" . $this->globalTimeout . " ms) has been exceeded";
+                break;
             }
 
             try {
@@ -187,6 +222,7 @@ class GeoService
                     $this->errors[$m] = $m . ' found' . print_r($this->lastResponse, true) . '; Not all required properties found(' . implode(',', $notfound) . ')';
                     continue;
                 }
+
                 return $this->accumulativeGeo;
             } catch (GeoException $ex) {
                 $this->errors[$m] = $ex->getMessage();

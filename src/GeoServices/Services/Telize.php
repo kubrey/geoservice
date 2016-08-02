@@ -36,7 +36,7 @@ class Telize implements Service {
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_USERAGENT => "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.6) Gecko/20070725 Firefox/3.0.0.6",
-            CURLOPT_TIMEOUT => 5
+            CURLOPT_TIMEOUT_MS => (isset($options['timeout']) ? $options['timeout'] : 2000)
         );
         $ch = curl_init();
         if (!curl_setopt_array($ch, $optionsCurl)) {

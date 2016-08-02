@@ -36,7 +36,7 @@ class Ipinfo implements Service{
             CURLOPT_URL => $url,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => 5
+            CURLOPT_TIMEOUT_MS => (isset($options['timeout']) ? $options['timeout'] : 2000)
         );
         $ch = curl_init();
         if (!curl_setopt_array($ch, $optionsCurl)) {
