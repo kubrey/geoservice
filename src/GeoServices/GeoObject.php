@@ -3,16 +3,16 @@
 namespace GeoServices;
 
 /**
- * @property-write string $ip
- * @property-write string $countryName
- * @property-write string $city
- * @property-write string $latitude
- * @property-write string $longitude
- * @property-write string $zip
- * @property-write string $regionName
- * @property-write string $countryCode
- * @property-write string $isp
- * @property-write string $method
+ * @property string $ip
+ * @property string $countryName
+ * @property string $city
+ * @property string $latitude
+ * @property string $longitude
+ * @property string $zip
+ * @property string $regionName
+ * @property string $countryCode
+ * @property string $isp
+ * @property string $method
  *
  * @author kubrey
  */
